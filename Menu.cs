@@ -5,8 +5,12 @@ namespace PersonalFinanceControlConsole
 {
     class Menu
     {
+        static int ScreenSizeLines = 15;
+        static IMongoDatabase Database;
+
         public static void Login(IMongoDatabase database)
         {
+            Database = database;
             DrawScreen();
             int idLogin = WriteLogin();
             var user = new Person(idLogin, database);
@@ -15,7 +19,7 @@ namespace PersonalFinanceControlConsole
                 Register(user);
                 user.Save();
             }
-            WellcomeScreen(user.Name);
+            WellcomeScreen(user);
         }
 
         private static void Register(Person user)
@@ -39,12 +43,27 @@ namespace PersonalFinanceControlConsole
             user.Name = name;
         }
 
-        private static void WellcomeScreen(string name)
+        private static void WellcomeScreen(Person user)
         {
             DrawScreen();
-            int initialLine = SetTitle("Wellcome " + name);
+            int initialLine = SetTitle("Wellcome " + user.Name);
+            Console.SetCursorPosition(3, initialLine);
+            Console.WriteLine("Choose one option:");
+            initialLine++;
+            Console.SetCursorPosition(3, initialLine);
+            Console.WriteLine("9 - Delete User");
+            initialLine++;
+            initialLine++;
+            Console.SetCursorPosition(3, initialLine);
+            Console.Write("Opção: ");
             var option = int.Parse(Console.ReadLine());
             CheckExit(option);
+            if (option == 9)
+            {
+                user.Delete();
+                Login(Database);
+            }
+
         }
         private static int WriteLogin()
         {
@@ -69,7 +88,7 @@ namespace PersonalFinanceControlConsole
         {
             Console.Clear();
             DrawFirstLastLine();
-            for (int lines = 0; lines <= 10; lines++)
+            for (int lines = 0; lines <= ScreenSizeLines; lines++)
             {
                 DrawMiddleLine();
             }
@@ -106,7 +125,7 @@ namespace PersonalFinanceControlConsole
         }
         private static void Footnote()
         {
-            Console.SetCursorPosition(3, 10);
+            Console.SetCursorPosition(3, ScreenSizeLines);
             Console.WriteLine("Type 0 to Exit");
         }
         private static void CheckExit(int option)

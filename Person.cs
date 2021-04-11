@@ -14,7 +14,7 @@ namespace PersonalFinanceControlConsole
         {
             this.IdLogin = idLogin;
             this.PeopleCollection = database.GetCollection<BsonDocument>("people"); ;
-            BsonDocument user = FindUser(idLogin);
+            BsonDocument user = FindUser();
             if (user != null)
             {
                 this.Name = user["name"].AsString;
@@ -32,11 +32,17 @@ namespace PersonalFinanceControlConsole
             
         }
 
-        private BsonDocument FindUser(int idLogin)
+        private BsonDocument FindUser()
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("user_id", idLogin);
+            var filter = Builders<BsonDocument>.Filter.Eq("user_id", IdLogin);
             var userDocument = PeopleCollection.Find(filter).FirstOrDefault();
             return userDocument;
+        }
+
+        internal void Delete()
+        {
+            var deleteFilter = Builders<BsonDocument>.Filter.Eq("user_id", IdLogin);
+            PeopleCollection.DeleteOne(deleteFilter);
         }
     }
 }
