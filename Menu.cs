@@ -1,14 +1,31 @@
+using MongoDB.Driver;
 using System;
 
 namespace PersonalFinanceControlConsole
 {
     class Menu
     {
-        public static void Login()
+        public static void Login(IMongoDatabase database)
         {
             DrawScreen();
             int idLogin = WriteLogin();
+            var user = new Person(idLogin, database);
+            if (user.Name != "")
+            {
+                WellcomeScreen(user.Name);
+            }
         }
+        private static void WellcomeScreen(string name)
+        {
+            DrawScreen();
+            Header();
+            Footnote();
+            Console.SetCursorPosition(3, 4);
+            Console.Write("Wellcome " + name + ": ");
+            var option = int.Parse(Console.ReadLine());
+            CheckExit(option);
+        }
+
         public static void DrawScreen()
         {
             Console.Clear();
