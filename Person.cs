@@ -6,24 +6,36 @@ namespace PersonalFinanceControlConsole
 {
     internal class Person
     {
-        private int IdLogin;
+        public int IdLogin { get; set; }
         public string Name { get; set; }
+        public IMongoCollection<BsonDocument> PeopleCollection;
 
         public Person(int idLogin, IMongoDatabase database)
         {
             this.IdLogin = idLogin;
-            BsonDocument user = FindUser(idLogin, database);
+            this.PeopleCollection = database.GetCollection<BsonDocument>("people"); ;
+            BsonDocument user = FindUser(idLogin);
             if (user != null)
             {
-
                 this.Name = user["name"].AsString;
             }
         }
-        private BsonDocument FindUser(int idLogin, IMongoDatabase database)
+
+        internal void Save()
         {
-            var collection = database.GetCollection<BsonDocument>("people");
+            var document = new BsonDocument
+            {
+                { "user_id", IdLogin },
+                { "name", Name }
+            };
+            PeopleCollection.InsertOne(document);
+            
+        }
+
+        private BsonDocument FindUser(int idLogin)
+        {
             var filter = Builders<BsonDocument>.Filter.Eq("user_id", idLogin);
-            var userDocument = collection.Find(filter).FirstOrDefault();
+            var userDocument = PeopleCollection.Find(filter).FirstOrDefault();
             return userDocument;
         }
     }

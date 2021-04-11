@@ -10,20 +10,59 @@ namespace PersonalFinanceControlConsole
             DrawScreen();
             int idLogin = WriteLogin();
             var user = new Person(idLogin, database);
-            if (user.Name != "")
+            if (string.IsNullOrEmpty(user.Name))
             {
-                WellcomeScreen(user.Name);
+                Register(user);
+                user.Save();
             }
+            WellcomeScreen(user.Name);
         }
+
+        private static void Register(Person user)
+        {
+            DrawScreen();
+            int initialLine = SetTitle("Register");
+            Console.SetCursorPosition(3, initialLine);
+            Console.Write("Id: " + user.IdLogin);
+            initialLine++;
+            Console.SetCursorPosition(3, initialLine);
+            Console.Write("Enter your name: ");
+            var name = Console.ReadLine();
+            if (string.IsNullOrEmpty(name))
+            {
+                Register(user);
+            }
+            if (name == "0")
+            {
+                CheckExit(0);
+            }
+            user.Name = name;
+        }
+
         private static void WellcomeScreen(string name)
         {
             DrawScreen();
-            Header();
-            Footnote();
-            Console.SetCursorPosition(3, 4);
-            Console.Write("Wellcome " + name + ": ");
+            int initialLine = SetTitle("Wellcome " + name);
             var option = int.Parse(Console.ReadLine());
             CheckExit(option);
+        }
+        private static int WriteLogin()
+        {
+            int initialLine = SetTitle("Login");
+            Console.SetCursorPosition(3, initialLine);
+            Console.Write("Type your Id: ");
+            var idLogin = int.Parse(Console.ReadLine());
+            CheckExit(idLogin);
+            return idLogin;
+        }
+
+        private static int SetTitle(string title)
+        {
+            Console.SetCursorPosition(3, 4);
+            Console.Write(title);
+            Console.SetCursorPosition(3, 5);
+            Console.WriteLine("---------------------------");
+            return 7;
         }
 
         public static void DrawScreen()
@@ -35,6 +74,8 @@ namespace PersonalFinanceControlConsole
                 DrawMiddleLine();
             }
             DrawFirstLastLine();
+            Header();
+            Footnote();
         }
         private static void DrawFirstLastLine()
         {
@@ -56,17 +97,6 @@ namespace PersonalFinanceControlConsole
             Console.Write("|");
             Console.Write("\n");
         }
-        private static int WriteLogin()
-        {
-            Header();
-            Footnote();
-            Console.SetCursorPosition(3, 4);
-            Console.Write("Type your Id: ");
-            var idLogin = int.Parse(Console.ReadLine());
-            CheckExit(idLogin);
-            return idLogin;
-        }
-
         private static void Header()
         {
             Console.SetCursorPosition(9, 2);
