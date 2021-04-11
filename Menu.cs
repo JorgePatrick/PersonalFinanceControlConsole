@@ -6,6 +6,7 @@ namespace PersonalFinanceControlConsole
     class Menu
     {
         static int ScreenSizeLines = 15;
+        static int ScreenSizeCols = 34;
         static IMongoDatabase Database;
 
         public static void Login(IMongoDatabase database)
@@ -13,7 +14,7 @@ namespace PersonalFinanceControlConsole
             Database = database;
             DrawScreen();
             int idLogin = WriteLogin();
-            var user = new Person(idLogin, database);
+            var user = new Person(idLogin, Database);
             if (string.IsNullOrEmpty(user.Name))
             {
                 Register(user);
@@ -25,12 +26,9 @@ namespace PersonalFinanceControlConsole
         private static void Register(Person user)
         {
             DrawScreen();
-            int initialLine = SetTitle("Register");
-            Console.SetCursorPosition(3, initialLine);
-            Console.Write("Id: " + user.IdLogin);
-            initialLine++;
-            Console.SetCursorPosition(3, initialLine);
-            Console.Write("Enter your name: ");
+            int currentLine = SetTitle("Register");
+            currentLine = WriteLine(currentLine, "Id: " + user.IdLogin);
+            currentLine = WriteLine(currentLine, "Enter your name: ");
             var name = Console.ReadLine();
             if (string.IsNullOrEmpty(name))
             {
@@ -42,48 +40,66 @@ namespace PersonalFinanceControlConsole
             }
             user.Name = name;
         }
-
         private static void WellcomeScreen(Person user)
         {
             DrawScreen();
-            int initialLine = SetTitle("Wellcome " + user.Name);
-            Console.SetCursorPosition(3, initialLine);
-            Console.WriteLine("Choose one option:");
-            initialLine++;
-            Console.SetCursorPosition(3, initialLine);
-            Console.WriteLine("9 - Delete User");
-            initialLine++;
-            initialLine++;
-            Console.SetCursorPosition(3, initialLine);
-            Console.Write("Opção: ");
+            int currentLine = SetTitle("Wellcome " + user.Name);
+            currentLine = WriteNewLine(currentLine, "Choose one option:");
+            currentLine = WriteNewLine(currentLine, "1 - Add Account");
+            currentLine = WriteNewLine(currentLine, "9 - Delete User");
+            currentLine++;
+            currentLine = WriteLine(currentLine, "Opção: ");
             var option = int.Parse(Console.ReadLine());
-            CheckExit(option);
-            if (option == 9)
+            switch (option)
             {
-                user.Delete();
-                Login(Database);
+                case 1: AddAccount(user); break;
+                case 9: user.Delete(); Login(Database); break;
+                case 0: CheckExit(option); break;
+                default: WellcomeScreen(user); break;
             }
-
+        }
+        private static void AddAccount(Person user)
+        {
+            DrawScreen();
+            int currentLine = SetTitle("Add Account");
+            currentLine = WriteNewLine(currentLine, "Fill the info above");
+            currentLine++;
+            currentLine = WriteLine(currentLine, "Account Name: ");
+            var accountName = Console.ReadLine();
         }
         private static int WriteLogin()
         {
-            int initialLine = SetTitle("Login");
-            Console.SetCursorPosition(3, initialLine);
-            Console.Write("Type your Id: ");
+            int currentLine = SetTitle("Login");
+            currentLine = WriteLine(currentLine, "Type your Id: ");
             var idLogin = int.Parse(Console.ReadLine());
             CheckExit(idLogin);
             return idLogin;
         }
-
         private static int SetTitle(string title)
         {
             Console.SetCursorPosition(3, 4);
             Console.Write(title);
             Console.SetCursorPosition(3, 5);
-            Console.WriteLine("---------------------------");
-            return 7;
+            for (int i = 0; i <= (ScreenSizeCols - 4); i++)
+            {
+                Console.Write("-");
+            }
+            return 6;
         }
-
+        private static int WriteNewLine(int line, string text)
+        {
+            line++;
+            Console.SetCursorPosition(3, line);
+            Console.WriteLine(text);
+            return line;
+        }
+        private static int WriteLine(int line, string text)
+        {
+            line++;
+            Console.SetCursorPosition(3, line);
+            Console.Write(text);
+            return line;
+        }
         public static void DrawScreen()
         {
             Console.Clear();
@@ -99,7 +115,7 @@ namespace PersonalFinanceControlConsole
         private static void DrawFirstLastLine()
         {
             Console.Write("+");
-            for (int i = 0; i <= 30; i++)
+            for (int i = 0; i <= ScreenSizeCols; i++)
             {
                 Console.Write("-");
             }
@@ -109,7 +125,7 @@ namespace PersonalFinanceControlConsole
         private static void DrawMiddleLine()
         {
             Console.Write("|");
-            for (int i = 0; i <= 30; i++)
+            for (int i = 0; i <= ScreenSizeCols; i++)
             {
                 Console.Write(" ");
             }
@@ -118,10 +134,13 @@ namespace PersonalFinanceControlConsole
         }
         private static void Header()
         {
-            Console.SetCursorPosition(9, 2);
+            Console.SetCursorPosition((ScreenSizeCols / 2 - 6), 2);
             Console.WriteLine("Finance Control");
             Console.SetCursorPosition(3, 3);
-            Console.WriteLine("===========================");
+            for (int i = 0; i <= (ScreenSizeCols - 4); i++)
+            {
+                Console.Write("=");
+            }
         }
         private static void Footnote()
         {
