@@ -44,5 +44,10 @@ namespace PersonalFinanceControlConsole
             var deleteFilter = Builders<BsonDocument>.Filter.Eq("user_id", IdLogin);
             PeopleCollection.DeleteOne(deleteFilter);
         }
+
+        internal bool VerifyExistingAccount(string accountName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

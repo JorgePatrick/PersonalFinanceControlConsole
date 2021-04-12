@@ -22,7 +22,19 @@ namespace PersonalFinanceControlConsole
             }
             WellcomeScreen(user);
         }
-
+        private static int WriteLogin()
+        {
+            int currentLine = SetTitle("Login");
+            currentLine = WriteLine(currentLine, "Type your Id: ");
+            int idLogin;
+            bool idLoginIsNumber = int.TryParse(Console.ReadLine(), out idLogin);
+            if (!idLoginIsNumber)
+            {
+                WriteLogin();
+            }
+            CheckExit(idLogin);
+            return idLogin;
+        }
         private static void Register(Person user)
         {
             DrawScreen();
@@ -48,8 +60,13 @@ namespace PersonalFinanceControlConsole
             currentLine = WriteNewLine(currentLine, "1 - Add Account");
             currentLine = WriteNewLine(currentLine, "9 - Delete User");
             currentLine++;
-            currentLine = WriteLine(currentLine, "Opção: ");
-            var option = int.Parse(Console.ReadLine());
+            currentLine = WriteLine(currentLine, "Option: ");
+            int option;
+            bool optionIsNumber = int.TryParse(Console.ReadLine(), out option);
+            if (!optionIsNumber)
+            {
+                WellcomeScreen(user);
+            }
             switch (option)
             {
                 case 1: AddAccount(user); break;
@@ -61,20 +78,40 @@ namespace PersonalFinanceControlConsole
         private static void AddAccount(Person user)
         {
             DrawScreen();
+            Console.SetCursorPosition(18, ScreenSizeLines);
+            Console.Write("/ 9 to back");
             int currentLine = SetTitle("Add Account");
             currentLine = WriteNewLine(currentLine, "Fill the info above");
             currentLine++;
             currentLine = WriteLine(currentLine, "Account Name: ");
             var accountName = Console.ReadLine();
+            if (string.IsNullOrEmpty(accountName))
+            {
+                AddAccount(user);
+            }
+            switch (accountName)
+            {
+                case "9": WellcomeScreen(user); break;
+                case "0": CheckExit(0); break;
+                default:
+                    {
+                        if (user.VerifyExistingAccount(accountName))
+                        {
+                            Message("You already have an account " + accountName);
+                            AddAccount(user);
+                        }
+                    }; break;
+            }
         }
-        private static int WriteLogin()
+        private static void Message(string message)
         {
-            int currentLine = SetTitle("Login");
-            currentLine = WriteLine(currentLine, "Type your Id: ");
-            var idLogin = int.Parse(Console.ReadLine());
-            CheckExit(idLogin);
-            return idLogin;
+            DrawScreen();
+            int currentLine = SetTitle("Message");
+            currentLine++;
+            currentLine = WriteNewLine(currentLine, message);
+            Console.ReadKey();
         }
+
         private static int SetTitle(string title)
         {
             Console.SetCursorPosition(3, 4);
