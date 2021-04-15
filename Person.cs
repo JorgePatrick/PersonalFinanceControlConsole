@@ -21,5 +21,11 @@ namespace PersonalFinanceControlConsole
         {
             throw new NotImplementedException();
         }
+        internal bool CheckIfExists()
+        {
+            return string.IsNullOrEmpty(Name);
+        }
+
+
     }
 }

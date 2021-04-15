@@ -10,20 +10,12 @@ namespace PersonalFinanceControlConsole
 
         public static void Login(IMongoCollection<Person> collection)
         {
-            MenuDefault.DrawScreen();
             Collection = collection;
-            int userId = WriteLogin();
-            Person user = ReadUser(userId);
-            if (user == null)
-            {
-                user = new Person();
-                string userName = Register(userId);
-                Save(user, userId, userName);
-            }
+            Person user = MenuLoginRegister.Login();
             WellcomeScreen(user);
         }
 
-        private static Person ReadUser(int userId)
+        internal static Person ReadUser(int userId)
         {
             var query =
                 from e in Collection.AsQueryable<Person>()
@@ -32,53 +24,21 @@ namespace PersonalFinanceControlConsole
             return query.FirstOrDefault();
         }
 
-        private static void Save(Person user, int userId, string userName)
+        internal static void Save(Person user)
         {
-            user.UserId = userId;
-            user.Name = userName;
             user.PeopleCollection = Collection;
             Collection.InsertOne(user);
         }
 
-        private static int WriteLogin()
-        {
-            int currentLine = MenuDefault.SetTitle("Login");
-            currentLine = WriteLine(currentLine, "Type your Id: ");
-            int userId;
-            bool userIdIsNumber = int.TryParse(Console.ReadLine(), out userId);
-            if (!userIdIsNumber)
-            {
-                WriteLogin();
-            }
-            CheckExit(userId);
-            return userId;
-        }
-        private static string Register(int userId)
-        {
-            MenuDefault.DrawScreen();
-            int currentLine = MenuDefault.SetTitle("Register");
-            currentLine = WriteLine(currentLine, "Id: " + userId);
-            currentLine = WriteLine(currentLine, "Enter your name: ");
-            var name = Console.ReadLine();
-            if (string.IsNullOrEmpty(name))
-            {
-                Register(userId);
-            }
-            if (name == "0")
-            {
-                CheckExit(0);
-            }
-            return name;
-        }
         private static void WellcomeScreen(Person user)
         {
             MenuDefault.DrawScreen();
-            int currentLine = MenuDefault.SetTitle("Wellcome " + user.Name);
-            currentLine = WriteNewLine(currentLine, "Choose one option:");
-            currentLine = WriteNewLine(currentLine, "1 - Add Account");
-            currentLine = WriteNewLine(currentLine, "9 - Delete User");
-            currentLine++;
-            currentLine = WriteLine(currentLine, "Option: ");
+            MenuDefault.SetTitle("Wellcome " + user.Name);
+            MenuDefault.WriteNewLine("Choose one option:");
+            MenuDefault.WriteNewLine("1 - Add Account");
+            MenuDefault.WriteNewLine("9 - Delete User");
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteLine("Option: ");
             int option;
             bool optionIsNumber = int.TryParse(Console.ReadLine(), out option);
             if (!optionIsNumber)
@@ -102,10 +62,10 @@ namespace PersonalFinanceControlConsole
         {
             MenuDefault.DrawScreen();
             MenuDefault.SetGoBackOption();
-            int currentLine = MenuDefault.SetTitle("Add Account");
-            currentLine = WriteNewLine(currentLine, "Fill the info above");
-            currentLine++;
-            currentLine = WriteLine(currentLine, "Account Name: ");
+            MenuDefault.SetTitle("Add Account");
+            MenuDefault.WriteNewLine("Fill the info above");
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteLine("Account Name: ");
             var accountName = Console.ReadLine();
             if (string.IsNullOrEmpty(accountName))
             {
@@ -126,21 +86,7 @@ namespace PersonalFinanceControlConsole
             }
         }
 
-        private static int WriteNewLine(int line, string text)
-        {
-            line++;
-            Console.SetCursorPosition(3, line);
-            Console.WriteLine(text);
-            return line;
-        }
-        private static int WriteLine(int line, string text)
-        {
-            line++;
-            Console.SetCursorPosition(3, line);
-            Console.Write(text);
-            return line;
-        }
-        private static void CheckExit(int option)
+        internal static void CheckExit(int option)
         {
             if (option == 0)
             {
@@ -151,9 +97,9 @@ namespace PersonalFinanceControlConsole
         private static void Message(string message)
         {
             MenuDefault.DrawScreen();
-            int currentLine = MenuDefault.SetTitle("Message");
-            currentLine++;
-            currentLine = WriteNewLine(currentLine, message);
+            MenuDefault.SetTitle("Message");
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteNewLine(message);
             Console.ReadKey();
         }
 

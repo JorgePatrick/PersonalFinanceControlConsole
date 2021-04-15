@@ -8,6 +8,7 @@ namespace PersonalFinanceControlConsole
     {
         static int ScreenSizeLines = 15;
         static int ScreenSizeCols = 34;
+        public static int CurrentLine = 0;
         public static void DrawScreen()
         {
             Console.Clear();
@@ -55,7 +56,7 @@ namespace PersonalFinanceControlConsole
             Console.SetCursorPosition(3, ScreenSizeLines);
             Console.WriteLine("Type 0 to Exit");
         }
-        public static int SetTitle(string title)
+        public static void SetTitle(string title)
         {
             Console.SetCursorPosition(3, 4);
             Console.Write(title);
@@ -64,7 +65,7 @@ namespace PersonalFinanceControlConsole
             {
                 Console.Write("-");
             }
-            return 6;
+            CurrentLine = 6;
         }
 
         internal static void SetGoBackOption()
@@ -72,5 +73,34 @@ namespace PersonalFinanceControlConsole
             Console.SetCursorPosition(18, ScreenSizeLines);
             Console.Write("/ 9 to back");
         }
+        internal static void WriteNewLine(string text)
+        {
+            CurrentLine++;
+            Console.SetCursorPosition(3, CurrentLine);
+            Console.WriteLine(text);
+        }
+        internal static void WriteLine(string text)
+        {
+            CurrentLine++;
+            Console.SetCursorPosition(3, CurrentLine);
+            Console.Write(text);
+        }
+        internal static void CheckExit(int option)
+        {
+            if (option == 0)
+            {
+                Console.Clear();
+                System.Environment.Exit(0);
+            }
+        }
+        internal static void Message(string message)
+        {
+            DrawScreen();
+            SetTitle("Message");
+            CurrentLine++;
+            WriteNewLine(message);
+            Console.ReadKey();
+        }
+
     }
 }
