@@ -6,13 +6,11 @@ namespace PersonalFinanceControlConsole
 {
     class Menu
     {
-        static int ScreenSizeLines = 15;
-        static int ScreenSizeCols = 34;
         static IMongoCollection<Person> Collection;
 
         public static void Login(IMongoCollection<Person> collection)
         {
-            DrawScreen();
+            MenuDefault.DrawScreen();
             Collection = collection;
             int userId = WriteLogin();
             Person user = ReadUser(userId);
@@ -44,7 +42,7 @@ namespace PersonalFinanceControlConsole
 
         private static int WriteLogin()
         {
-            int currentLine = SetTitle("Login");
+            int currentLine = MenuDefault.SetTitle("Login");
             currentLine = WriteLine(currentLine, "Type your Id: ");
             int userId;
             bool userIdIsNumber = int.TryParse(Console.ReadLine(), out userId);
@@ -57,8 +55,8 @@ namespace PersonalFinanceControlConsole
         }
         private static string Register(int userId)
         {
-            DrawScreen();
-            int currentLine = SetTitle("Register");
+            MenuDefault.DrawScreen();
+            int currentLine = MenuDefault.SetTitle("Register");
             currentLine = WriteLine(currentLine, "Id: " + userId);
             currentLine = WriteLine(currentLine, "Enter your name: ");
             var name = Console.ReadLine();
@@ -74,8 +72,8 @@ namespace PersonalFinanceControlConsole
         }
         private static void WellcomeScreen(Person user)
         {
-            DrawScreen();
-            int currentLine = SetTitle("Wellcome " + user.Name);
+            MenuDefault.DrawScreen();
+            int currentLine = MenuDefault.SetTitle("Wellcome " + user.Name);
             currentLine = WriteNewLine(currentLine, "Choose one option:");
             currentLine = WriteNewLine(currentLine, "1 - Add Account");
             currentLine = WriteNewLine(currentLine, "9 - Delete User");
@@ -102,10 +100,9 @@ namespace PersonalFinanceControlConsole
         }
         private static void AddAccount(Person user)
         {
-            DrawScreen();
-            Console.SetCursorPosition(18, ScreenSizeLines);
-            Console.Write("/ 9 to back");
-            int currentLine = SetTitle("Add Account");
+            MenuDefault.DrawScreen();
+            MenuDefault.SetGoBackOption();
+            int currentLine = MenuDefault.SetTitle("Add Account");
             currentLine = WriteNewLine(currentLine, "Fill the info above");
             currentLine++;
             currentLine = WriteLine(currentLine, "Account Name: ");
@@ -128,26 +125,7 @@ namespace PersonalFinanceControlConsole
                     }; break;
             }
         }
-        private static void Message(string message)
-        {
-            DrawScreen();
-            int currentLine = SetTitle("Message");
-            currentLine++;
-            currentLine = WriteNewLine(currentLine, message);
-            Console.ReadKey();
-        }
 
-        private static int SetTitle(string title)
-        {
-            Console.SetCursorPosition(3, 4);
-            Console.Write(title);
-            Console.SetCursorPosition(3, 5);
-            for (int i = 0; i <= (ScreenSizeCols - 4); i++)
-            {
-                Console.Write("-");
-            }
-            return 6;
-        }
         private static int WriteNewLine(int line, string text)
         {
             line++;
@@ -162,53 +140,6 @@ namespace PersonalFinanceControlConsole
             Console.Write(text);
             return line;
         }
-        public static void DrawScreen()
-        {
-            Console.Clear();
-            DrawFirstLastLine();
-            for (int lines = 0; lines <= ScreenSizeLines; lines++)
-            {
-                DrawMiddleLine();
-            }
-            DrawFirstLastLine();
-            Header();
-            Footnote();
-        }
-        private static void DrawFirstLastLine()
-        {
-            Console.Write("+");
-            for (int i = 0; i <= ScreenSizeCols; i++)
-            {
-                Console.Write("-");
-            }
-            Console.Write("+");
-            Console.Write("\n");
-        }
-        private static void DrawMiddleLine()
-        {
-            Console.Write("|");
-            for (int i = 0; i <= ScreenSizeCols; i++)
-            {
-                Console.Write(" ");
-            }
-            Console.Write("|");
-            Console.Write("\n");
-        }
-        private static void Header()
-        {
-            Console.SetCursorPosition((ScreenSizeCols / 2 - 6), 2);
-            Console.WriteLine("Finance Control");
-            Console.SetCursorPosition(3, 3);
-            for (int i = 0; i <= (ScreenSizeCols - 4); i++)
-            {
-                Console.Write("=");
-            }
-        }
-        private static void Footnote()
-        {
-            Console.SetCursorPosition(3, ScreenSizeLines);
-            Console.WriteLine("Type 0 to Exit");
-        }
         private static void CheckExit(int option)
         {
             if (option == 0)
@@ -217,5 +148,14 @@ namespace PersonalFinanceControlConsole
                 System.Environment.Exit(0);
             }
         }
+        private static void Message(string message)
+        {
+            MenuDefault.DrawScreen();
+            int currentLine = MenuDefault.SetTitle("Message");
+            currentLine++;
+            currentLine = WriteNewLine(currentLine, message);
+            Console.ReadKey();
+        }
+
     }
 }
