@@ -1,5 +1,6 @@
-using MongoDB.Driver;
 using System;
+using System.Linq;
+using MongoDB.Driver;
 
 namespace PersonalFinanceControlConsole
 {
@@ -7,50 +8,69 @@ namespace PersonalFinanceControlConsole
     {
         static int ScreenSizeLines = 15;
         static int ScreenSizeCols = 34;
-        static IMongoDatabase Database;
+        static IMongoCollection<Person> Collection;
 
-        public static void Login(IMongoDatabase database)
+        public static void Login(IMongoCollection<Person> collection)
         {
-            Database = database;
             DrawScreen();
-            int idLogin = WriteLogin();
-            var user = new Person(idLogin, Database);
-            if (string.IsNullOrEmpty(user.Name))
+            Collection = collection;
+            int userId = WriteLogin();
+            Person user = ReadUser(userId);
+            if (user == null)
             {
-                Register(user);
-                user.Save();
+                user = new Person();
+                string userName = Register(userId);
+                Save(user, userId, userName);
             }
             WellcomeScreen(user);
         }
+
+        private static Person ReadUser(int userId)
+        {
+            var query =
+                from e in Collection.AsQueryable<Person>()
+                where e.UserId == userId
+                select e;
+            return query.FirstOrDefault();
+        }
+
+        private static void Save(Person user, int userId, string userName)
+        {
+            user.UserId = userId;
+            user.Name = userName;
+            user.PeopleCollection = Collection;
+            Collection.InsertOne(user);
+        }
+
         private static int WriteLogin()
         {
             int currentLine = SetTitle("Login");
             currentLine = WriteLine(currentLine, "Type your Id: ");
-            int idLogin;
-            bool idLoginIsNumber = int.TryParse(Console.ReadLine(), out idLogin);
-            if (!idLoginIsNumber)
+            int userId;
+            bool userIdIsNumber = int.TryParse(Console.ReadLine(), out userId);
+            if (!userIdIsNumber)
             {
                 WriteLogin();
             }
-            CheckExit(idLogin);
-            return idLogin;
+            CheckExit(userId);
+            return userId;
         }
-        private static void Register(Person user)
+        private static string Register(int userId)
         {
             DrawScreen();
             int currentLine = SetTitle("Register");
-            currentLine = WriteLine(currentLine, "Id: " + user.IdLogin);
+            currentLine = WriteLine(currentLine, "Id: " + userId);
             currentLine = WriteLine(currentLine, "Enter your name: ");
             var name = Console.ReadLine();
             if (string.IsNullOrEmpty(name))
             {
-                Register(user);
+                Register(userId);
             }
             if (name == "0")
             {
                 CheckExit(0);
             }
-            user.Name = name;
+            return name;
         }
         private static void WellcomeScreen(Person user)
         {
@@ -70,7 +90,12 @@ namespace PersonalFinanceControlConsole
             switch (option)
             {
                 case 1: AddAccount(user); break;
-                case 9: user.Delete(); Login(Database); break;
+                case 9:
+                    {
+                        var filter = Builders<Person>.Filter.Eq("_id", user.Id);
+                        Collection.DeleteOne(filter);
+                        Login(Collection); break;
+                    }
                 case 0: CheckExit(option); break;
                 default: WellcomeScreen(user); break;
             }

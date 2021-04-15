@@ -1,49 +1,21 @@
-﻿using MongoDB.Driver;
+﻿using System;
+using System.Linq;
 using MongoDB.Bson;
-using System;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace PersonalFinanceControlConsole
 {
     internal class Person
     {
-        public int IdLogin { get; set; }
+        [BsonId]
+        public BsonObjectId Id { get; set; }
+        [BsonElement("user_id")]
+        public int UserId { get; set; }
+        [BsonElement("name")]
         public string Name { get; set; }
-        public IMongoCollection<BsonDocument> PeopleCollection;
-
-        public Person(int idLogin, IMongoDatabase database)
-        {
-            this.IdLogin = idLogin;
-            this.PeopleCollection = database.GetCollection<BsonDocument>("people"); ;
-            BsonDocument user = FindUser();
-            if (user != null)
-            {
-                this.Name = user["name"].AsString;
-            }
-        }
-
-        internal void Save()
-        {
-            var document = new BsonDocument
-            {
-                { "user_id", IdLogin },
-                { "name", Name }
-            };
-            PeopleCollection.InsertOne(document);
-            
-        }
-
-        private BsonDocument FindUser()
-        {
-            var filter = Builders<BsonDocument>.Filter.Eq("user_id", IdLogin);
-            var userDocument = PeopleCollection.Find(filter).FirstOrDefault();
-            return userDocument;
-        }
-
-        internal void Delete()
-        {
-            var deleteFilter = Builders<BsonDocument>.Filter.Eq("user_id", IdLogin);
-            PeopleCollection.DeleteOne(deleteFilter);
-        }
+        [BsonIgnore]
+        public IMongoCollection<Person> PeopleCollection;
 
         internal bool VerifyExistingAccount(string accountName)
         {
