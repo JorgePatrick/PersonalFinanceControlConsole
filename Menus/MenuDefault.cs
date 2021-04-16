@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PersonalFinanceControlConsole
+namespace PersonalFinanceControlConsole.Menus
 {
-    class MenuDefault
+    public class MenuDefault
     {
         static int ScreenSizeLines = 15;
         static int ScreenSizeCols = 34;
@@ -79,15 +79,47 @@ namespace PersonalFinanceControlConsole
             Console.SetCursorPosition(3, CurrentLine);
             Console.WriteLine(text);
         }
+
         internal static void WriteLine(string text)
         {
             CurrentLine++;
             Console.SetCursorPosition(3, CurrentLine);
             Console.Write(text);
         }
-        internal static void CheckExit(int option)
+
+        internal static string ReadLine(Action method, Enums.ETypeRead typeRead)
         {
-            if (option == 0)
+            var text = Console.ReadLine();
+            CheckExit(text);
+            if (string.IsNullOrEmpty(text))
+            {
+                text = "invalid";
+            }
+            switch (typeRead)
+            {
+                case Enums.ETypeRead.String:
+                    break;
+                case Enums.ETypeRead.Int:
+                    bool inputIsNumber = int.TryParse(text, out int input);
+                    if (!inputIsNumber)
+                    {
+                        text = "invalid";
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (text == "invalid" && method != null)
+            {
+                method();
+                return "3000";
+            }
+            return text;
+        }
+
+        internal static void CheckExit(string option)
+        {
+            if (option == "0")
             {
                 Console.Clear();
                 System.Environment.Exit(0);

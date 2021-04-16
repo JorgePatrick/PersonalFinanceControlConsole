@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using MongoDB.Driver;
+using PersonalFinanceControlConsole.Menus;
 
 namespace PersonalFinanceControlConsole
 {
@@ -11,8 +12,32 @@ namespace PersonalFinanceControlConsole
         public static void Login(IMongoCollection<Person> collection)
         {
             Collection = collection;
-            Person user = MenuLoginRegister.Login();
-            WellcomeScreen(user);
+            int userId = 0;
+            while (userId == 0)
+            {
+                userId = Menus.MenuOptions.WriteLogin();
+            }
+
+            Person user = Menu.ReadUser(userId);
+            while (user.NotExists())
+            {
+                Menus.MenuOptions.Register(user);
+            }
+
+            var option = WellcomeScreen(user);
+            switch (option)
+            {
+                case 1: AddAccount(user); break;
+                case 9: DeleteUser(user); break;
+                default: WellcomeScreen(user); break;
+            }
+        }
+
+        private static void DeleteUser(Person user)
+        {
+            var filter = Builders<Person>.Filter.Eq("_id", user.Id);
+            Collection.DeleteOne(filter);
+            Login(Collection);
         }
 
         internal static Person ReadUser(int userId)
@@ -21,7 +46,13 @@ namespace PersonalFinanceControlConsole
                 from e in Collection.AsQueryable<Person>()
                 where e.UserId == userId
                 select e;
-            return query.FirstOrDefault();
+            var user = query.FirstOrDefault();
+            if (user == null)
+            {
+                user = new Person();
+                user.UserId = userId;
+            }
+            return user;
         }
 
         internal static void Save(Person user)
@@ -30,7 +61,7 @@ namespace PersonalFinanceControlConsole
             Collection.InsertOne(user);
         }
 
-        private static void WellcomeScreen(Person user)
+        private static int WellcomeScreen(Person user)
         {
             MenuDefault.DrawScreen();
             MenuDefault.SetTitle("Wellcome " + user.Name);
@@ -39,24 +70,8 @@ namespace PersonalFinanceControlConsole
             MenuDefault.WriteNewLine("9 - Delete User");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Option: ");
-            int option;
-            bool optionIsNumber = int.TryParse(Console.ReadLine(), out option);
-            if (!optionIsNumber)
-            {
-                WellcomeScreen(user);
-            }
-            switch (option)
-            {
-                case 1: AddAccount(user); break;
-                case 9:
-                    {
-                        var filter = Builders<Person>.Filter.Eq("_id", user.Id);
-                        Collection.DeleteOne(filter);
-                        Login(Collection); break;
-                    }
-                case 0: CheckExit(option); break;
-                default: WellcomeScreen(user); break;
-            }
+            string optionStr = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
+            return int.Parse(optionStr);
         }
         private static void AddAccount(Person user)
         {
@@ -66,42 +81,20 @@ namespace PersonalFinanceControlConsole
             MenuDefault.WriteNewLine("Fill the info above");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Account Name: ");
-            var accountName = Console.ReadLine();
-            if (string.IsNullOrEmpty(accountName))
-            {
-                AddAccount(user);
-            }
+            string accountName = MenuDefault.ReadLine(() => AddAccount(user), Menus.Enums.ETypeRead.String);
             switch (accountName)
             {
                 case "9": WellcomeScreen(user); break;
-                case "0": CheckExit(0); break;
+                case "0": MenuDefault.CheckExit("0"); break;
                 default:
                     {
                         if (user.VerifyExistingAccount(accountName))
                         {
-                            Message("You already have an account " + accountName);
+                            MenuDefault.Message("You already have an account " + accountName);
                             AddAccount(user);
                         }
                     }; break;
             }
         }
-
-        internal static void CheckExit(int option)
-        {
-            if (option == 0)
-            {
-                Console.Clear();
-                System.Environment.Exit(0);
-            }
-        }
-        private static void Message(string message)
-        {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Message");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteNewLine(message);
-            Console.ReadKey();
-        }
-
     }
 }
