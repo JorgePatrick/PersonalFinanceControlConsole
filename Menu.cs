@@ -24,12 +24,42 @@ namespace PersonalFinanceControlConsole
                 Menus.MenuOptions.Register(user);
             }
 
-            var option = WellcomeScreen(user);
+            WellcomeScreen(user);
+        }
+
+        private static void ManageAccounts(Person user)
+        {
+            MenuDefault.DrawScreen();
+            MenuDefault.SetGoBackOption();
+            MenuDefault.SetTitle("Manage Accounts " + user.Name);
+            MenuDefault.WriteNewLine("Choose one option:");
+            MenuDefault.WriteNewLine("1 - Add Account");
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteLine("Option: ");
+            string option = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
             switch (option)
             {
-                case 1: AddAccount(user); break;
-                case 9: DeleteUser(user); break;
-                default: WellcomeScreen(user); break;
+                case "1": AddAccount(user); break;
+                case "*": WellcomeScreen(user); break;
+                default: ManageAccounts(user); break;
+            }
+        }
+
+        private static void ManageProfile(Person user)
+        {
+            MenuDefault.DrawScreen();
+            MenuDefault.SetGoBackOption();
+            MenuDefault.SetTitle("Manage Profile " + user.Name);
+            MenuDefault.WriteNewLine("Choose one option:");
+            MenuDefault.WriteNewLine("9 - Delete User");
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteLine("Option: ");
+            string option = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
+            switch (option)
+            {
+                case "9": DeleteUser(user); break;
+                case "*": WellcomeScreen(user); break;
+                default: ManageProfile(user); break;
             }
         }
 
@@ -61,17 +91,23 @@ namespace PersonalFinanceControlConsole
             Collection.InsertOne(user);
         }
 
-        private static int WellcomeScreen(Person user)
+        private static void WellcomeScreen(Person user)
         {
             MenuDefault.DrawScreen();
             MenuDefault.SetTitle("Wellcome " + user.Name);
             MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("1 - Add Account");
-            MenuDefault.WriteNewLine("9 - Delete User");
+            MenuDefault.WriteNewLine("1 - Manage Profile");
+            MenuDefault.WriteNewLine("2 - Manage Accounts");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Option: ");
             string optionStr = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
-            return int.Parse(optionStr);
+            var option = int.Parse(optionStr);
+            switch (option)
+            {
+                case 1: ManageProfile(user); break;
+                case 2: ManageAccounts(user); break;
+                default: WellcomeScreen(user); break;
+            }
         }
         private static void AddAccount(Person user)
         {
@@ -84,8 +120,7 @@ namespace PersonalFinanceControlConsole
             string accountName = MenuDefault.ReadLine(() => AddAccount(user), Menus.Enums.ETypeRead.String);
             switch (accountName)
             {
-                case "9": WellcomeScreen(user); break;
-                case "0": MenuDefault.CheckExit("0"); break;
+                case "*": ManageAccounts(user); break;
                 default:
                     {
                         if (user.VerifyExistingAccount(accountName))

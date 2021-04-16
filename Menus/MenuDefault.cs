@@ -71,7 +71,7 @@ namespace PersonalFinanceControlConsole.Menus
         internal static void SetGoBackOption()
         {
             Console.SetCursorPosition(18, ScreenSizeLines);
-            Console.Write("/ 9 to back");
+            Console.Write("/ * to back");
         }
         internal static void WriteNewLine(string text)
         {
