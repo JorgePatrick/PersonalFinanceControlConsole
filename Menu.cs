@@ -15,59 +15,77 @@ namespace PersonalFinanceControlConsole
             int userId = 0;
             while (userId == 0)
             {
-                userId = Menus.MenuOptions.WriteLogin();
+                userId = Menus.MenuOptions.LoginScreen();
             }
 
             Person user = Menu.ReadUser(userId);
-            while (user.NotExists())
+            if (user.NotExists())
             {
-                Menus.MenuOptions.Register(user);
+                string userName = "invalid";
+                while (userName == "invalid")
+                {
+                    userName = Menus.MenuOptions.RegisterScreen(userId);
+                }
+                user.Name = userName;
+                Menu.Save(user);
             }
 
-            WellcomeScreen(user);
+            Wellcome(user);
         }
 
-        private static void ManageAccounts(Person user)
+        private static void Wellcome(Person user)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Manage Accounts " + user.Name);
-            MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("1 - Add Account");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Option: ");
-            string option = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
+
+            MenuOptions.WellcomeScreen(user.Name);
+            string optionStr = MenuDefault.ReadLine(() => Wellcome(user), Menus.Enums.ETypeRead.Int);
+            var option = int.Parse(optionStr);
             switch (option)
             {
-                case "1": AddAccount(user); break;
-                case "*": WellcomeScreen(user); break;
-                default: ManageAccounts(user); break;
+                case 1: ManageProfile(user); break;
+                case 2: ManageAccounts(user); break;
+                default: Wellcome(user); break;
             }
         }
-
         private static void ManageProfile(Person user)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Manage Profile " + user.Name);
-            MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("9 - Delete User");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Option: ");
-            string option = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
+            MenuOptions.ManageProfileScreen(user.Name);
+            string option = MenuDefault.ReadLine(() => ManageProfile(user), Menus.Enums.ETypeRead.Int);
             switch (option)
             {
                 case "9": DeleteUser(user); break;
-                case "*": WellcomeScreen(user); break;
+                case "*": Wellcome(user); break;
                 default: ManageProfile(user); break;
             }
         }
 
-        private static void DeleteUser(Person user)
+        private static void ManageAccounts(Person user)
         {
-            var filter = Builders<Person>.Filter.Eq("_id", user.Id);
-            Collection.DeleteOne(filter);
-            Login(Collection);
+            MenuOptions.ManageAccountsScreen(user.Name);
+            string option = MenuDefault.ReadLine(() => Wellcome(user), Menus.Enums.ETypeRead.Int);
+            switch (option)
+            {
+                case "1": AddAccount(user); break;
+                case "*": Wellcome(user); break;
+                default: ManageAccounts(user); break;
+            }
+        }
+
+        private static void AddAccount(Person user)
+        {
+            MenuOptions.AddAccountScreen();
+            string accountName = MenuDefault.ReadLine(() => AddAccount(user), Menus.Enums.ETypeRead.String);
+            switch (accountName)
+            {
+                case "*": ManageAccounts(user); break;
+                default:
+                    {
+                        if (user.VerifyExistingAccount(accountName))
+                        {
+                            MenuDefault.Message("You already have an account " + accountName);
+                            AddAccount(user);
+                        }
+                    }; break;
+            }
         }
 
         internal static Person ReadUser(int userId)
@@ -91,45 +109,11 @@ namespace PersonalFinanceControlConsole
             Collection.InsertOne(user);
         }
 
-        private static void WellcomeScreen(Person user)
+        private static void DeleteUser(Person user)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Wellcome " + user.Name);
-            MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("1 - Manage Profile");
-            MenuDefault.WriteNewLine("2 - Manage Accounts");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Option: ");
-            string optionStr = MenuDefault.ReadLine(() => WellcomeScreen(user), Menus.Enums.ETypeRead.Int);
-            var option = int.Parse(optionStr);
-            switch (option)
-            {
-                case 1: ManageProfile(user); break;
-                case 2: ManageAccounts(user); break;
-                default: WellcomeScreen(user); break;
-            }
-        }
-        private static void AddAccount(Person user)
-        {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Add Account");
-            MenuDefault.WriteNewLine("Fill the info above");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Account Name: ");
-            string accountName = MenuDefault.ReadLine(() => AddAccount(user), Menus.Enums.ETypeRead.String);
-            switch (accountName)
-            {
-                case "*": ManageAccounts(user); break;
-                default:
-                    {
-                        if (user.VerifyExistingAccount(accountName))
-                        {
-                            MenuDefault.Message("You already have an account " + accountName);
-                            AddAccount(user);
-                        }
-                    }; break;
-            }
+            var filter = Builders<Person>.Filter.Eq("_id", user.Id);
+            Collection.DeleteOne(filter);
+            Login(Collection);
         }
     }
 }

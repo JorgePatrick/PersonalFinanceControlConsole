@@ -17,15 +17,14 @@ namespace PersonalFinanceControlConsole
         [BsonIgnore]
         public IMongoCollection<Person> PeopleCollection;
 
-        internal bool VerifyExistingAccount(string accountName)
-        {
-            throw new NotImplementedException();
-        }
         internal bool NotExists()
         {
             return string.IsNullOrEmpty(Name);
         }
 
-
+        internal bool VerifyExistingAccount(string accountName)
+        {
+            return true;
+        }
     }
 }

@@ -112,7 +112,6 @@ namespace PersonalFinanceControlConsole.Menus
             if (text == "invalid" && method != null)
             {
                 method();
-                return "3000";
             }
             return text;
         }
