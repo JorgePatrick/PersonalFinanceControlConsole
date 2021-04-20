@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
 using PersonalFinanceControlConsole.Menus;
@@ -60,6 +61,10 @@ namespace PersonalFinanceControlConsole
 
         private static void ManageAccounts(Person user)
         {
+            if (user.AccountsEmpty())
+            {
+                AddAccount(user);
+            }
             MenuOptions.ManageAccountsScreen(user.Name);
             string option = MenuDefault.ReadLine(() => Wellcome(user), Menus.Enums.ETypeRead.Int);
             switch (option)
@@ -77,15 +82,27 @@ namespace PersonalFinanceControlConsole
             switch (accountName)
             {
                 case "*": ManageAccounts(user); break;
-                default:
-                    {
-                        if (user.VerifyExistingAccount(accountName))
-                        {
-                            MenuDefault.Message("You already have an account " + accountName);
-                            AddAccount(user);
-                        }
-                    }; break;
+                default: InsertAccount(user, accountName); break;
             }
+        }
+
+        private static void InsertAccount(Person user, string accountName)
+        {
+            if (user.VerifyExistingAccount(accountName))
+            {
+                MenuDefault.Message("You already have an account " + accountName);
+                AddAccount(user);
+                return;
+            }
+            int idAccount = 0;
+            if (!user.AccountsEmpty())
+            {
+                idAccount = user.Accounts.Max(t => t.AccountId);
+            }
+            idAccount++;
+            user.Accounts.Add(new Account(idAccount, accountName));
+            UpdateUser(user);
+            ManageAccounts(user);
         }
 
         internal static Person ReadUser(int userId)
@@ -106,7 +123,15 @@ namespace PersonalFinanceControlConsole
         internal static void Save(Person user)
         {
             user.PeopleCollection = Collection;
+            user.Accounts = new List<Account>();
             Collection.InsertOne(user);
+        }
+
+        private static void UpdateUser(Person user)
+        {
+            var filter = Builders<Person>.Filter.Eq("_id", user.Id);
+            var update = Builders<Person>.Update.Set("accounts", user.Accounts);
+            Collection.UpdateOne(filter, update);
         }
 
         private static void DeleteUser(Person user)

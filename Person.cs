@@ -27,7 +27,12 @@ namespace PersonalFinanceControlConsole
 
         internal bool VerifyExistingAccount(string accountName)
         {
-            return true;
+            return Accounts.Any(x => x.AccountName == accountName);
+        }
+
+        internal bool AccountsEmpty()
+        {
+            return Accounts.Count == 0;
         }
     }
 }
