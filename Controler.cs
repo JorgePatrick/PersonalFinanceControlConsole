@@ -73,7 +73,7 @@ namespace PersonalFinanceControlConsole
             var user = ReadUser(userId);
             var filter = Builders<Person>.Filter.Eq("_id", user.Id);
             user.Collection.DeleteOne(filter);
-            MenuHandler.Show();
+            Menus.MenuHandler.Show();
         }
 
         private static void UpdateAccounts(Person user)
