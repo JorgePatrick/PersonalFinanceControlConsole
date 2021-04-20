@@ -8,11 +8,7 @@ namespace PersonalFinanceControlConsole
     {
         static void Main(string[] args)
         {
-            MongoClient dbClient = new MongoClient("mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb");
-            var database = dbClient.GetDatabase("personal_finance");
-            var collection = database.GetCollection<Person>("people"); ;
-
-            Menu.Login(collection);
+            MenuHandler.Show();
         }
     }
 }

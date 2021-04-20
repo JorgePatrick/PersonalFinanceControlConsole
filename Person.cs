@@ -18,11 +18,20 @@ namespace PersonalFinanceControlConsole
         [BsonElement("accounts")]
         public List<Account> Accounts { get; set; }
         [BsonIgnore]
-        public IMongoCollection<Person> PeopleCollection;
+        internal IMongoCollection<Person> Collection;
 
-        internal bool NotExists()
+        public Person(int userId)
         {
-            return string.IsNullOrEmpty(Name);
+            MongoClient dbClient = new MongoClient("mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb");
+            var database = dbClient.GetDatabase("personal_finance");
+            this.Collection = database.GetCollection<Person>("people");
+            this.UserId = userId;
+            this.Accounts = new List<Account>();
+        }
+
+        public Person(int userId, string userName) : this(userId)
+        {
+            Name = userName;
         }
 
         internal bool VerifyExistingAccount(string accountName)
