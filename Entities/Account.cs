@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace PersonalFinanceControlConsole
+namespace PersonalFinanceControlConsole.Entities
 {
     public class Account
     {

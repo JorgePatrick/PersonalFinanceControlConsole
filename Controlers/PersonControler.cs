@@ -1,7 +1,9 @@
-﻿using System;
+﻿using PersonalFinanceControlConsole.DataBases;
+using PersonalFinanceControlConsole.Entities;
+using System;
 using System.Linq;
 
-namespace PersonalFinanceControlConsole
+namespace PersonalFinanceControlConsole.Controlers
 {
     internal class PersonControler
     {

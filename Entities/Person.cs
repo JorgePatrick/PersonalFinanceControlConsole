@@ -5,7 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
-namespace PersonalFinanceControlConsole
+namespace PersonalFinanceControlConsole.Entities
 {
     internal class Person
     {

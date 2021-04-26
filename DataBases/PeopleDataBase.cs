@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using MongoDB.Driver;
+using PersonalFinanceControlConsole.Entities;
 
-namespace PersonalFinanceControlConsole
+namespace PersonalFinanceControlConsole.DataBases
 {
     internal class PeopleDataBase
     {
