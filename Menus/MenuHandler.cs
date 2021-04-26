@@ -10,6 +10,7 @@ namespace PersonalFinanceControlConsole.Menus
     class MenuHandler
     {
         public PersonControler personControler = new PersonControler();
+        public AccountControler accountControler = new AccountControler();
         int userId;
 
         public void Show()
@@ -46,6 +47,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void Wellcome()
         {
+            accountControler.Accounts = personControler.GetAccounts();
             string userName = personControler.GetUserName();
             MenuOptions.WellcomeScreen(userName);
             string optionStr = MenuDefault.ReadLine(() => Wellcome(), Menus.Enums.ETypeRead.Int);
@@ -71,7 +73,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void ManageAccounts()
         {
-            if (personControler.AccountsEmpty())
+            if (accountControler.AccountsEmpty())
             {
                 AddAccount();
             }
@@ -98,13 +100,13 @@ namespace PersonalFinanceControlConsole.Menus
         }
         private void InsertAccount(string accountName)
         {
-            if (personControler.VerifyExistingAccount(accountName))
+            if (accountControler.VerifyExistingAccount(accountName))
             {
                 MenuDefault.Message("You already have an account " + accountName);
                 AddAccount();
                 return;
             }
-            personControler.InsertAccount(accountName);
+            accountControler.InsertAccount(personControler.GetId(), accountName);
             ManageAccounts();
         }
     }

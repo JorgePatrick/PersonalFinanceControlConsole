@@ -28,15 +28,5 @@ namespace PersonalFinanceControlConsole.Entities
         {
             Name = userName;
         }
-
-        internal bool VerifyExistingAccount(string accountName)
-        {
-            return Accounts.Any(x => x.AccountName == accountName);
-        }
-
-        internal bool AccountsEmpty()
-        {
-            return Accounts.Count == 0;
-        }
     }
 }

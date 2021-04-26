@@ -1,7 +1,9 @@
 ﻿using PersonalFinanceControlConsole.DataBases;
 using PersonalFinanceControlConsole.Entities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson;
 
 namespace PersonalFinanceControlConsole.Controlers
 {
@@ -30,32 +32,10 @@ namespace PersonalFinanceControlConsole.Controlers
             return user.Name;
         }
 
-        internal bool AccountsEmpty()
-        {
-            return user.AccountsEmpty();
-        }
-
         internal void InsertUser(int userId, string userName)
         {
             user = new Person(userId, userName);
             PersonDataBase.InsertUser(user);
-        }
-
-        internal bool VerifyExistingAccount(string accountName)
-        {
-            return user.VerifyExistingAccount(accountName);
-        }
-
-        internal void InsertAccount(string accountName)
-        {
-            int idAccount = 0;
-            if (!user.AccountsEmpty())
-            {
-                idAccount = user.Accounts.Max(t => t.AccountId);
-            }
-            idAccount++;
-            user.Accounts.Add(new Account(idAccount, accountName));
-            PersonDataBase.UpdateAccounts(user);
         }
 
         internal void DeleteUser()
@@ -63,6 +43,16 @@ namespace PersonalFinanceControlConsole.Controlers
             PersonDataBase.DeleteUser(user);
             var menuHandler = new Menus.MenuHandler();
             menuHandler.Show();
+        }
+
+        internal List<Account> GetAccounts()
+        {
+            return user.Accounts;
+        }
+
+        internal BsonObjectId GetId()
+        {
+            return user.Id;
         }
     }
 }
