@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PersonalFinanceControlConsole.Menus
 {
-    class MenuOptions
+    static class MenuOptions
     {
         public static int LoginScreen()
         {

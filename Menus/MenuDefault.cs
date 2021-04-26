@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PersonalFinanceControlConsole.Menus
 {
-    public class MenuDefault
+    public static class MenuDefault
     {
         static int ScreenSizeLines = 15;
         static int ScreenSizeCols = 34;

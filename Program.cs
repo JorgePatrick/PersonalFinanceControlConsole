@@ -8,7 +8,8 @@ namespace PersonalFinanceControlConsole
     {
         static void Main(string[] args)
         {
-            Menus.MenuHandler.Show();
+            var menuHandler = new Menus.MenuHandler();
+            menuHandler.Show();
         }
     }
 }

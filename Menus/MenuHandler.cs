@@ -5,31 +5,25 @@ using MongoDB.Driver;
 
 namespace PersonalFinanceControlConsole.Menus
 {
+    
     class MenuHandler
     {
-        public static void Show()
-        {
-            int userId = Login();
+        public PersonControler personControler = new PersonControler();
+        int userId;
 
-            if (Controler.UserNotExists(userId))
+        public void Show()
+        {
+            userId = Login();
+
+            if (personControler.UserNotExists(userId))
             {
-                Register(userId);
+                Register();
             }
 
-            Wellcome(userId);
+            Wellcome();
         }
 
-        private static void Register(int userId)
-        {
-            string userName = "invalid";
-            while (userName == "invalid")
-            {
-                userName = Menus.MenuOptions.RegisterScreen(userId);
-            }
-            Controler.InsertUser(userId, userName);
-        }
-
-        private static int Login()
+        private int Login()
         {
             int userId = 0;
             while (userId == 0)
@@ -39,68 +33,78 @@ namespace PersonalFinanceControlConsole.Menus
             return userId;
         }
 
-        private static void Wellcome(int userId)
+        private void Register()
         {
-            string userName = Controler.GetUserName(userId);
+            string userName = "invalid";
+            while (userName == "invalid")
+            {
+                userName = Menus.MenuOptions.RegisterScreen(userId);
+            }
+            personControler.InsertUser(userId, userName);
+        }
+
+        private void Wellcome()
+        {
+            string userName = personControler.GetUserName();
             MenuOptions.WellcomeScreen(userName);
-            string optionStr = MenuDefault.ReadLine(() => Wellcome(userId), Menus.Enums.ETypeRead.Int);
+            string optionStr = MenuDefault.ReadLine(() => Wellcome(), Menus.Enums.ETypeRead.Int);
             var option = int.Parse(optionStr);
             switch (option)
             {
-                case 1: ManageProfile(userId, userName); break;
-                case 2: ManageAccounts(userId); break;
-                default: Wellcome(userId); break;
+                case 1: ManageProfile(userName); break;
+                case 2: ManageAccounts(); break;
+                default: Wellcome(); break;
             }
         }
-        private static void ManageProfile(int userId, string userName)
+        private void ManageProfile(string userName)
         {
             MenuOptions.ManageProfileScreen(userName);
-            string option = MenuDefault.ReadLine(() => ManageProfile(userId, userName), Menus.Enums.ETypeRead.Int);
+            string option = MenuDefault.ReadLine(() => ManageProfile(userName), Menus.Enums.ETypeRead.String);
             switch (option)
             {
-                case "9": Controler.DeleteUser(userId); break;
-                case "*": Wellcome(userId); break;
-                default: ManageProfile(userId, userName); break;
+                case "9": personControler.DeleteUser(); break;
+                case "*": Wellcome(); break;
+                default: ManageProfile(userName); break;
             }
         }
 
-        private static void ManageAccounts(int userId)
+        private void ManageAccounts()
         {
-            if (Controler.AccountsEmpty(userId))
+            if (personControler.AccountsEmpty())
             {
-                AddAccount(userId);
+                AddAccount();
             }
-            string userName = Controler.GetUserName(userId);
+            string userName = personControler.GetUserName();
             MenuOptions.ManageAccountsScreen(userName);
-            string option = MenuDefault.ReadLine(() => Wellcome(userId), Menus.Enums.ETypeRead.Int);
+            string option = MenuDefault.ReadLine(() => Wellcome(), Menus.Enums.ETypeRead.String);
             switch (option)
             {
-                case "1": AddAccount(userId); break;
-                case "*": Wellcome(userId); break;
-                default: ManageAccounts(userId); break;
+                case "1": AddAccount(); break;
+                case "*": Wellcome(); break;
+                default: ManageAccounts(); break;
             }
         }
 
-        private static void AddAccount(int userId)
+        private void AddAccount()
         {
             MenuOptions.AddAccountScreen();
-            string accountName = MenuDefault.ReadLine(() => AddAccount(userId), Menus.Enums.ETypeRead.String);
+            string accountName = MenuDefault.ReadLine(() => AddAccount(), Menus.Enums.ETypeRead.String);
             switch (accountName)
             {
-                case "*": ManageAccounts(userId); break;
-                default: InsertAccount(userId, accountName); break;
+                case "*": ManageAccounts(); break;
+                default: InsertAccount(accountName); break;
             }
         }
-        private static void InsertAccount(int userId, string accountName)
+        private void InsertAccount(string accountName)
         {
-            if (Controler.VerifyExistingAccount(userId, accountName))
+            if (personControler.VerifyExistingAccount(accountName))
             {
                 MenuDefault.Message("You already have an account " + accountName);
-                AddAccount(userId);
+                AddAccount();
                 return;
             }
-            Controler.InsertAccount(userId, accountName);
-            ManageAccounts(userId);
+            personControler.InsertAccount(accountName);
+            ManageAccounts();
         }
     }
 }

@@ -17,14 +17,9 @@ namespace PersonalFinanceControlConsole
         public string Name { get; set; }
         [BsonElement("accounts")]
         public List<Account> Accounts { get; set; }
-        [BsonIgnore]
-        internal IMongoCollection<Person> Collection;
 
         public Person(int userId)
         {
-            MongoClient dbClient = new MongoClient("mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb");
-            var database = dbClient.GetDatabase("personal_finance");
-            this.Collection = database.GetCollection<Person>("people");
             this.UserId = userId;
             this.Accounts = new List<Account>();
         }
