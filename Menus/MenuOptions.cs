@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PersonalFinanceControlConsole.Menus.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace PersonalFinanceControlConsole.Menus
             MenuDefault.DrawScreen();
             MenuDefault.SetTitle("Login");
             MenuDefault.WriteLine("Type your Id: ");
-            string userIdStr = MenuDefault.ReadLine(null, Menus.Enums.ETypeRead.Int);
+            string userIdStr = MenuDefault.ReadLine(null, ETypeRead.Int);
             if (userIdStr == "invalid")
             {
                 return 0;
@@ -24,7 +25,7 @@ namespace PersonalFinanceControlConsole.Menus
             MenuDefault.SetTitle("Register");
             MenuDefault.WriteLine("Id: " + userId);
             MenuDefault.WriteLine("Enter your name: ");
-            return MenuDefault.ReadLine(null, Menus.Enums.ETypeRead.String);
+            return MenuDefault.ReadLine(null, ETypeRead.String);
         }
 
         internal static void WellcomeScreen(string name)
@@ -65,10 +66,28 @@ namespace PersonalFinanceControlConsole.Menus
         {
             MenuDefault.DrawScreen();
             MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Register");
+            MenuDefault.SetTitle("Change Name");
             MenuDefault.WriteLine("Name: " + userName);
             MenuDefault.WriteLine("Enter new name: ");
-            return MenuDefault.ReadLine(null, Menus.Enums.ETypeRead.String);
+            return MenuDefault.ReadLine(null, ETypeRead.String);
+        }
+
+        internal static string AreYouSureScreen(string message, Action method)
+        {
+            MenuDefault.DrawScreen();
+            MenuDefault.SetTitle(message);
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteLine("Are you sure? (Y/N) ");
+            return MenuDefault.ReadLine(method, ETypeRead.YesOrNo);
+        }
+
+        internal static void Message(string message)
+        {
+            MenuDefault.DrawScreen();
+            MenuDefault.SetTitle("Message");
+            MenuDefault.CurrentLine++;
+            MenuDefault.WriteNewLine(message);
+            Console.ReadKey();
         }
 
         internal static void AddAccountScreen()

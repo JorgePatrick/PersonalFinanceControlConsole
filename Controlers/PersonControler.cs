@@ -41,8 +41,6 @@ namespace PersonalFinanceControlConsole.Controlers
         internal void DeleteUser()
         {
             PersonDataBase.DeleteUser(user);
-            var menuHandler = new Menus.MenuHandler();
-            menuHandler.Show();
         }
 
         internal List<Account> GetAccounts()

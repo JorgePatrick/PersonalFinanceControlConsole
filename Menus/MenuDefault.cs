@@ -106,6 +106,13 @@ namespace PersonalFinanceControlConsole.Menus
                         text = "invalid";
                     }
                     break;
+                case Enums.ETypeRead.YesOrNo:
+                    text = text.ToUpper();
+                    if (text != "Y" && text != "N")
+                    {
+                        text = "invalid";
+                    }
+                    break;
                 default:
                     break;
             }
@@ -124,14 +131,5 @@ namespace PersonalFinanceControlConsole.Menus
                 System.Environment.Exit(0);
             }
         }
-        internal static void Message(string message)
-        {
-            DrawScreen();
-            SetTitle("Message");
-            CurrentLine++;
-            WriteNewLine(message);
-            Console.ReadKey();
-        }
-
     }
 }

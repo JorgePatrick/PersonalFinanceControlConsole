@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
 using PersonalFinanceControlConsole.Controlers;
+using PersonalFinanceControlConsole.Menus.Enums;
 
 namespace PersonalFinanceControlConsole.Menus
 {
-    
+
     class MenuHandler
     {
         public PersonControler personControler = new PersonControler();
@@ -49,26 +50,54 @@ namespace PersonalFinanceControlConsole.Menus
         {
             accountControler.Accounts = personControler.GetAccounts();
             MenuOptions.WellcomeScreen(personControler.GetUserName());
-            string optionStr = MenuDefault.ReadLine(() => Wellcome(), Menus.Enums.ETypeRead.Int);
-            var option = int.Parse(optionStr);
+            string option = MenuDefault.ReadLine(() => Wellcome(), ETypeRead.String);
             switch (option)
             {
-                case 1: ManageProfile(); break;
-                case 2: ManageAccounts(); break;
+                case "1": ManageProfile(); break;
+                case "2": ManageAccounts(); break;
                 default: Wellcome(); break;
             }
         }
         private void ManageProfile()
         {
             MenuOptions.ManageProfileScreen(personControler.GetUserName());
-            string option = MenuDefault.ReadLine(() => ManageProfile(), Menus.Enums.ETypeRead.String);
+            string option = MenuDefault.ReadLine(() => ManageProfile(), ETypeRead.String);
             switch (option)
             {
                 case "1": ChangeName(); break;
-                case "9": personControler.DeleteUser(); break;
+                case "9": DeleteUser(); break;
                 case "*": Wellcome(); break;
                 default: ManageProfile(); break;
             }
+        }
+
+        private void ManageAccounts()
+        {
+            if (accountControler.AccountsEmpty())
+            {
+                AddAccount();
+            }
+            string userName = personControler.GetUserName();
+            MenuOptions.ManageAccountsScreen(userName);
+            string option = MenuDefault.ReadLine(() => ManageAccounts(), ETypeRead.String);
+            switch (option)
+            {
+                case "1": AddAccount(); break;
+                case "*": Wellcome(); break;
+                default: ManageAccounts(); break;
+            }
+        }
+
+        private void DeleteUser()
+        {
+            string anwser = Menus.MenuOptions.AreYouSureScreen("Delete User", () => DeleteUser());
+            if (anwser == "Y")
+            {
+                personControler.DeleteUser();
+                Show();
+            }
+            else
+                ManageProfile();
         }
 
         private void ChangeName()
@@ -81,31 +110,26 @@ namespace PersonalFinanceControlConsole.Menus
             switch (newName)
             {
                 case "*": ManageProfile(); break;
-                default: personControler.UpdateName(newName); ManageProfile(); break;
+                default: UpdateName(newName); break;
             }
         }
 
-        private void ManageAccounts()
+        private void UpdateName(string newName)
         {
-            if (accountControler.AccountsEmpty())
+            string anwser = Menus.MenuOptions.AreYouSureScreen("Change Name", () => UpdateName(newName));
+            if (anwser == "Y")
             {
-                AddAccount();
+                personControler.UpdateName(newName);
+                ManageProfile();
             }
-            string userName = personControler.GetUserName();
-            MenuOptions.ManageAccountsScreen(userName);
-            string option = MenuDefault.ReadLine(() => Wellcome(), Menus.Enums.ETypeRead.String);
-            switch (option)
-            {
-                case "1": AddAccount(); break;
-                case "*": Wellcome(); break;
-                default: ManageAccounts(); break;
-            }
+            else
+                ManageProfile();
         }
 
         private void AddAccount()
         {
             MenuOptions.AddAccountScreen();
-            string accountName = MenuDefault.ReadLine(() => AddAccount(), Menus.Enums.ETypeRead.String);
+            string accountName = MenuDefault.ReadLine(() => AddAccount(), ETypeRead.String);
             switch (accountName)
             {
                 case "*": ManageAccounts(); break;
@@ -116,7 +140,7 @@ namespace PersonalFinanceControlConsole.Menus
         {
             if (accountControler.VerifyExistingAccount(accountName))
             {
-                MenuDefault.Message("You already have an account " + accountName);
+                MenuOptions.Message("You already have an account " + accountName);
                 AddAccount();
                 return;
             }
