@@ -8,6 +8,7 @@ namespace PersonalFinanceControlConsole.Menus.Enums
     {
         String = 1,
         Int = 2,
-        YesOrNo = 3
+        YesOrNo = 3,
+        MenuOption = 4
     }
 }

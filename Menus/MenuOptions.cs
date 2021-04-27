@@ -28,38 +28,22 @@ namespace PersonalFinanceControlConsole.Menus
             return MenuDefault.ReadLine(null, ETypeRead.String);
         }
 
-        internal static void WellcomeScreen(string name)
+        internal static string OptionScreen(string title, string[] optionList, Action method)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Wellcome " + name);
-            MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("1 - Manage Profile");
-            MenuDefault.WriteNewLine("2 - Manage Accounts");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Option: ");
-        }
+            int optionIndex = 0;
 
-        internal static void ManageProfileScreen(string name)
-        {
             MenuDefault.DrawScreen();
             MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Manage Profile " + name);
+            MenuDefault.SetTitle(title);
             MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("1 - Change Name");
-            MenuDefault.WriteNewLine("9 - Delete User");
+            foreach (var optionText in optionList)
+            {
+                optionIndex++;
+                MenuDefault.WriteNewLine(optionIndex + " - " + optionText);
+            }
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Option: ");
-        }
-
-        internal static void ManageAccountsScreen(string name)
-        {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Manage Accounts " + name);
-            MenuDefault.WriteNewLine("Choose one option:");
-            MenuDefault.WriteNewLine("1 - Add Account");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Option: ");
+            return MenuDefault.ReadLine(method, ETypeRead.MenuOption, optionIndex);
         }
 
         internal static string ChangeName(string userName)

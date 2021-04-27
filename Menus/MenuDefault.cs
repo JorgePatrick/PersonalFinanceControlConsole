@@ -51,6 +51,7 @@ namespace PersonalFinanceControlConsole.Menus
                 Console.Write("=");
             }
         }
+
         private static void Footnote()
         {
             Console.SetCursorPosition(3, ScreenSizeLines);
@@ -71,7 +72,7 @@ namespace PersonalFinanceControlConsole.Menus
         internal static void SetGoBackOption()
         {
             Console.SetCursorPosition(18, ScreenSizeLines);
-            Console.Write("/ * to back");
+            Console.Write("/ * to Back");
         }
         internal static void WriteNewLine(string text)
         {
@@ -87,7 +88,7 @@ namespace PersonalFinanceControlConsole.Menus
             Console.Write(text);
         }
 
-        internal static string ReadLine(Action method, Enums.ETypeRead typeRead)
+        internal static string ReadLine(Action method, Enums.ETypeRead typeRead, int optionMaxValue = 0)
         {
             var text = Console.ReadLine();
             CheckExit(text);
@@ -100,18 +101,13 @@ namespace PersonalFinanceControlConsole.Menus
                 case Enums.ETypeRead.String:
                     break;
                 case Enums.ETypeRead.Int:
-                    bool inputIsNumber = int.TryParse(text, out int input);
-                    if (!inputIsNumber)
-                    {
-                        text = "invalid";
-                    }
+                    text = CheckInvalidNumber(text);
                     break;
                 case Enums.ETypeRead.YesOrNo:
-                    text = text.ToUpper();
-                    if (text != "Y" && text != "N")
-                    {
-                        text = "invalid";
-                    }
+                    text = CheckInvalidYesOrNo(text);
+                    break;
+                case Enums.ETypeRead.MenuOption:
+                    text = CheckInvalidMenuOption(text, optionMaxValue);
                     break;
                 default:
                     break;
@@ -119,6 +115,41 @@ namespace PersonalFinanceControlConsole.Menus
             if (text == "invalid" && method != null)
             {
                 method();
+            }
+            return text;
+        }
+
+        private static string CheckInvalidMenuOption(string text, int maxValue)
+        {
+            if (text == "*")
+                return text;
+
+            text = CheckInvalidNumber(text);
+            if (text == "invalid")
+                return text;
+
+            if (int.Parse(text) > maxValue)
+                return "invalid";
+            else
+                return text;
+        }
+
+        private static string CheckInvalidNumber(string text)
+        {
+            bool inputIsNumber = int.TryParse(text, out int input);
+            if (!inputIsNumber)
+            {
+                text = "invalid";
+            }
+            return text;
+        }
+
+        private static string CheckInvalidYesOrNo(string text)
+        {
+            text = text.ToUpper();
+            if (text != "Y" && text != "N")
+            {
+                text = "invalid";
             }
             return text;
         }

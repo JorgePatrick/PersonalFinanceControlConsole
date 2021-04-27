@@ -49,23 +49,35 @@ namespace PersonalFinanceControlConsole.Menus
         private void Wellcome()
         {
             accountControler.Accounts = personControler.GetAccounts();
-            MenuOptions.WellcomeScreen(personControler.GetUserName());
-            string option = MenuDefault.ReadLine(() => Wellcome(), ETypeRead.String);
+
+            var title = "Wellcome " + personControler.GetUserName();
+            string[] optionList =
+               {
+                "Manage Profile",
+                "Manage Accounts"
+               };
+            string option = MenuOptions.OptionScreen(title, optionList, () => Wellcome());
             switch (option)
             {
                 case "1": ManageProfile(); break;
                 case "2": ManageAccounts(); break;
+                case "*": Show(); break;
                 default: Wellcome(); break;
             }
         }
         private void ManageProfile()
         {
-            MenuOptions.ManageProfileScreen(personControler.GetUserName());
-            string option = MenuDefault.ReadLine(() => ManageProfile(), ETypeRead.String);
+            var title = "Manage Profile " + personControler.GetUserName();
+            string[] optionList =
+               {
+                "Change Name",
+                "Delete User"
+               };
+            string option = MenuOptions.OptionScreen(title, optionList, () => ManageProfile());
             switch (option)
             {
                 case "1": ChangeName(); break;
-                case "9": DeleteUser(); break;
+                case "2": DeleteUser(); break;
                 case "*": Wellcome(); break;
                 default: ManageProfile(); break;
             }
@@ -77,9 +89,13 @@ namespace PersonalFinanceControlConsole.Menus
             {
                 AddAccount();
             }
-            string userName = personControler.GetUserName();
-            MenuOptions.ManageAccountsScreen(userName);
-            string option = MenuDefault.ReadLine(() => ManageAccounts(), ETypeRead.String);
+
+            var title = "Manage Accounts " + personControler.GetUserName();
+            string[] optionList =
+               {
+                "Add Account"
+               };
+            string option = MenuOptions.OptionScreen(title, optionList, () => ManageAccounts());
             switch (option)
             {
                 case "1": AddAccount(); break;
