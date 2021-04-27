@@ -54,5 +54,11 @@ namespace PersonalFinanceControlConsole.Controlers
         {
             return user.Id;
         }
+
+        internal void UpdateName(string newName)
+        {
+            user.Name = newName;
+            PersonDataBase.UpdateName(user);
+        }
     }
 }

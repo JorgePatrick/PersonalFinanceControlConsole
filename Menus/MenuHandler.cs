@@ -48,26 +48,40 @@ namespace PersonalFinanceControlConsole.Menus
         private void Wellcome()
         {
             accountControler.Accounts = personControler.GetAccounts();
-            string userName = personControler.GetUserName();
-            MenuOptions.WellcomeScreen(userName);
+            MenuOptions.WellcomeScreen(personControler.GetUserName());
             string optionStr = MenuDefault.ReadLine(() => Wellcome(), Menus.Enums.ETypeRead.Int);
             var option = int.Parse(optionStr);
             switch (option)
             {
-                case 1: ManageProfile(userName); break;
+                case 1: ManageProfile(); break;
                 case 2: ManageAccounts(); break;
                 default: Wellcome(); break;
             }
         }
-        private void ManageProfile(string userName)
+        private void ManageProfile()
         {
-            MenuOptions.ManageProfileScreen(userName);
-            string option = MenuDefault.ReadLine(() => ManageProfile(userName), Menus.Enums.ETypeRead.String);
+            MenuOptions.ManageProfileScreen(personControler.GetUserName());
+            string option = MenuDefault.ReadLine(() => ManageProfile(), Menus.Enums.ETypeRead.String);
             switch (option)
             {
+                case "1": ChangeName(); break;
                 case "9": personControler.DeleteUser(); break;
                 case "*": Wellcome(); break;
-                default: ManageProfile(userName); break;
+                default: ManageProfile(); break;
+            }
+        }
+
+        private void ChangeName()
+        {
+            string newName = "invalid";
+            while (newName == "invalid")
+            {
+                newName = Menus.MenuOptions.ChangeName(personControler.GetUserName());
+            }
+            switch (newName)
+            {
+                case "*": ManageProfile(); break;
+                default: personControler.UpdateName(newName); ManageProfile(); break;
             }
         }
 

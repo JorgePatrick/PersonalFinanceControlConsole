@@ -37,5 +37,14 @@ namespace PersonalFinanceControlConsole.DataBases
             var filter = Builders<Person>.Filter.Eq("_id", user.Id);
             Collection.DeleteOne(filter);
         }
+
+        internal void UpdateName(Person user)
+        {
+            var filter = Builders<Person>.Filter.Eq("_id", user.Id);
+            var value = user.Name;
+            var fieldDefinitionAccounts = "name";
+            var update = Builders<Person>.Update.Set(fieldDefinitionAccounts, value);
+            Collection.UpdateOne(filter, update);
+        }
     }
 }

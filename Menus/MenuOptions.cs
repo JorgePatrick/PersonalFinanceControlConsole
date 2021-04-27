@@ -44,6 +44,7 @@ namespace PersonalFinanceControlConsole.Menus
             MenuDefault.SetGoBackOption();
             MenuDefault.SetTitle("Manage Profile " + name);
             MenuDefault.WriteNewLine("Choose one option:");
+            MenuDefault.WriteNewLine("1 - Change Name");
             MenuDefault.WriteNewLine("9 - Delete User");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Option: ");
@@ -58,6 +59,16 @@ namespace PersonalFinanceControlConsole.Menus
             MenuDefault.WriteNewLine("1 - Add Account");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Option: ");
+        }
+
+        internal static string ChangeName(string userName)
+        {
+            MenuDefault.DrawScreen();
+            MenuDefault.SetGoBackOption();
+            MenuDefault.SetTitle("Register");
+            MenuDefault.WriteLine("Name: " + userName);
+            MenuDefault.WriteLine("Enter new name: ");
+            return MenuDefault.ReadLine(null, Menus.Enums.ETypeRead.String);
         }
 
         internal static void AddAccountScreen()
