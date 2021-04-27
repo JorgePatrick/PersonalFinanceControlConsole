@@ -7,24 +7,20 @@ using PersonalFinanceControlConsole.Entities;
 
 namespace PersonalFinanceControlConsole.DataBases
 {
-    internal class PeopleDataBase
+    internal class PeopleDataBase : DataBase
     {
-        protected MongoClient DbClient;
-        protected IMongoDatabase Database;
-        protected IMongoCollection<Person> PeopleCollection;
+        protected IMongoCollection<Person> Collection;
 
         public PeopleDataBase()
         {
-            DbClient = new MongoClient("mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb");
-            Database = DbClient.GetDatabase("personal_finance");
-            PeopleCollection = Database.GetCollection<Person>("people");
+            Collection = Database.GetCollection<Person>("people");
         }
 
         internal Person ReadUser(int userId)
         {
             var user = new Person(userId);
             var query =
-                from e in PeopleCollection.AsQueryable<Person>()
+                from e in Collection.AsQueryable<Person>()
                 where e.UserId == userId
                 select e;
             user = query.FirstOrDefault();
@@ -33,13 +29,13 @@ namespace PersonalFinanceControlConsole.DataBases
 
         internal void InsertUser(Person user)
         {
-            PeopleCollection.InsertOne(user);
+            Collection.InsertOne(user);
         }
 
         internal void DeleteUser(Person user)
         {
             var filter = Builders<Person>.Filter.Eq("_id", user.Id);
-            PeopleCollection.DeleteOne(filter);
+            Collection.DeleteOne(filter);
         }
     }
 }
