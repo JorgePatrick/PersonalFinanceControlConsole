@@ -114,15 +114,32 @@ namespace PersonalFinanceControlConsole.Menus
             switch (account)
             {
                 case "*": ManageAccounts(); break;
-                default: ShowAccount(account); break;
+                default: AccountTransactions(int.Parse(account)); break;
             }
         }
 
-        private void ShowAccount(string account)
+        private void AccountTransactions(int account)
         {
-            string[,] accounInfo = accountControler.GetAccountInfo(int.Parse(account));
+
+            var title = "Account Transactions " + accountControler.GetAccountName(account); 
+            string[] optionList =
+               {
+                "Account Infos"
+               };
+            string option = MenuOptions.ListScreen(title, "Option", optionList, () => ManageProfile());
+            switch (option)
+            {
+                case "1": ShowAccount(account); break;
+                case "*": Wellcome(); break;
+                default: ManageProfile(); break;
+            }
+        }
+
+        private void ShowAccount(int account)
+        {
+            string[,] accounInfo = accountControler.GetAccountInfo(account);
             MenuOptions.ShowAccount(accounInfo);
-            ListAccounts();
+            AccountTransactions(account);
         }
 
         private void DeleteUser()

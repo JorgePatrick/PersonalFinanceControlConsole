@@ -71,7 +71,7 @@ namespace PersonalFinanceControlConsole.Menus
             MenuDefault.SetTitle("Message");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteNewLine(message);
-            Console.ReadKey();
+            MenuDefault.ReadKey();
         }
 
         internal static void AddAccountScreen()
@@ -87,13 +87,12 @@ namespace PersonalFinanceControlConsole.Menus
         internal static void ShowAccount(string[,] accounInfo)
         {
             MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
             MenuDefault.SetTitle("Account Infos");
             for (int i = 0; i < accounInfo.GetLength(0); i++)
             {
                 MenuDefault.WriteNewLine(accounInfo[i, 0] + ": " + accounInfo[i, 1]);
             }
-            Console.ReadKey();
+            MenuDefault.ReadKey();
         }
     }
 }

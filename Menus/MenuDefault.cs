@@ -107,7 +107,7 @@ namespace PersonalFinanceControlConsole.Menus
                     text = CheckInvalidYesOrNo(text);
                     break;
                 case Enums.ETypeRead.NumberList:
-                    text = CheckInvalidMenuOption(text, optionMaxValue);
+                    text = CheckInvalidNumberList(text, optionMaxValue);
                     break;
                 default:
                     break;
@@ -119,7 +119,7 @@ namespace PersonalFinanceControlConsole.Menus
             return text;
         }
 
-        private static string CheckInvalidMenuOption(string text, int maxValue)
+        private static string CheckInvalidNumberList(string text, int maxValue)
         {
             if (text == "*")
                 return text;

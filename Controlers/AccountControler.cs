@@ -57,5 +57,11 @@ namespace PersonalFinanceControlConsole.Controlers
             var account = Accounts.FirstOrDefault(x => x.AccountId == accountId);
             return account.GetInfos();
         }
+
+        internal string GetAccountName(int accountId)
+        {
+            var account = Accounts.FirstOrDefault(x => x.AccountId == accountId);
+            return account.AccountName;
+        }
     }
 }
