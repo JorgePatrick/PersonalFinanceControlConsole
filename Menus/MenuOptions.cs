@@ -28,22 +28,22 @@ namespace PersonalFinanceControlConsole.Menus
             return MenuDefault.ReadLine(null, ETypeRead.String);
         }
 
-        internal static string OptionScreen(string title, string[] optionList, Action method)
+        internal static string ListScreen(string title, string listType, string[] optionList, Action method)
         {
             int optionIndex = 0;
 
             MenuDefault.DrawScreen();
             MenuDefault.SetGoBackOption();
             MenuDefault.SetTitle(title);
-            MenuDefault.WriteNewLine("Choose one option:");
+            MenuDefault.WriteNewLine("Choose one " + listType + ":");
             foreach (var optionText in optionList)
             {
                 optionIndex++;
                 MenuDefault.WriteNewLine(optionIndex + " - " + optionText);
             }
             MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Option: ");
-            return MenuDefault.ReadLine(method, ETypeRead.MenuOption, optionIndex);
+            MenuDefault.WriteLine(listType + ": ");
+            return MenuDefault.ReadLine(method, ETypeRead.NumberList, optionIndex);
         }
 
         internal static string ChangeName(string userName)
@@ -82,6 +82,18 @@ namespace PersonalFinanceControlConsole.Menus
             MenuDefault.WriteNewLine("Fill the info above");
             MenuDefault.CurrentLine++;
             MenuDefault.WriteLine("Account Name: ");
+        }
+
+        internal static void ShowAccount(string[,] accounInfo)
+        {
+            MenuDefault.DrawScreen();
+            MenuDefault.SetGoBackOption();
+            MenuDefault.SetTitle("Account Infos");
+            for (int i = 0; i < accounInfo.GetLength(0); i++)
+            {
+                MenuDefault.WriteNewLine(accounInfo[i, 0] + ": " + accounInfo[i, 1]);
+            }
+            Console.ReadKey();
         }
     }
 }

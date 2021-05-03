@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace PersonalFinanceControlConsole.Entities
 {
@@ -12,6 +13,15 @@ namespace PersonalFinanceControlConsole.Entities
         {
             AccountId = accountId;
             AccountName = accountName;
+        }
+
+        internal string[,] GetInfos()
+        {
+            string[,] infos = 
+                {
+                    { "Name", AccountName }
+                };
+            return infos;
         }
     }
 }

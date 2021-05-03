@@ -11,7 +11,7 @@ namespace PersonalFinanceControlConsole.Controlers
     class AccountControler
     {
         public AccountDataBase AccountDataBase = new AccountDataBase();
-        public List<Account> Accounts;
+        private List<Account> Accounts;
 
         internal bool AccountsEmpty()
         {
@@ -33,6 +33,29 @@ namespace PersonalFinanceControlConsole.Controlers
             idAccount++;
             Accounts.Add(new Account(idAccount, accountName));
             AccountDataBase.UpdateAccounts(Accounts, idPerson);
+        }
+
+        internal string[] GetList()
+        {
+            string[] accountsList = new string[Accounts.Count];
+            var accountIndex = 0;
+            foreach (var account in Accounts)
+            {
+                accountsList[accountIndex] = account.AccountName;
+                accountIndex++;
+            }
+            return accountsList;
+        }
+
+        internal void SetAccounts(List<Account> accountList)
+        {
+            Accounts = accountList;
+        }
+
+        internal string[,] GetAccountInfo(int accountId)
+        {
+            var account = Accounts.FirstOrDefault(x => x.AccountId == accountId);
+            return account.GetInfos();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace PersonalFinanceControlConsole.Menus
 {
     public static class MenuDefault
     {
-        static int ScreenSizeLines = 15;
+        static int ScreenSizeLines = 20;
         static int ScreenSizeCols = 34;
         public static int CurrentLine = 0;
         public static void DrawScreen()
@@ -106,7 +106,7 @@ namespace PersonalFinanceControlConsole.Menus
                 case Enums.ETypeRead.YesOrNo:
                     text = CheckInvalidYesOrNo(text);
                     break;
-                case Enums.ETypeRead.MenuOption:
+                case Enums.ETypeRead.NumberList:
                     text = CheckInvalidMenuOption(text, optionMaxValue);
                     break;
                 default:
