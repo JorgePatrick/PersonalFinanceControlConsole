@@ -25,13 +25,14 @@ namespace PersonalFinanceControlConsole.Menus
             return MenuStructure.ReadLine(method, ETypeRead.NumberList, optionIndex);
         }
 
-        internal static string AreYouSureScreen(string message, Action method)
+        internal static bool AreYouSureScreen(string message, Action method)
         {
             MenuStructure.DrawScreen();
             MenuStructure.SetTitle(message);
             MenuStructure.AddLine(1);
             MenuStructure.WriteLine("Are you sure? (Y/N) ");
-            return MenuStructure.ReadLine(method, ETypeRead.YesOrNo);
+            var anwser = MenuStructure.ReadLine(method, ETypeRead.YesOrNo);
+            return anwser == "Y";
         }
 
         internal static void Message(string message)

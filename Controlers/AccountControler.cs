@@ -63,5 +63,24 @@ namespace PersonalFinanceControlConsole.Controlers
             var account = Accounts.FirstOrDefault(x => x.AccountId == accountId);
             return account.AccountName;
         }
+
+        internal void DeleteAccount(BsonObjectId idPerson, int accountId)
+        {
+            var account = Accounts.FirstOrDefault(x => x.AccountId == accountId);
+            Accounts.Remove(account);
+            if (Accounts.Max(t => t.AccountId) != Accounts.Count)
+                OrderAccounts();
+            AccountDataBase.UpdateAccounts(Accounts, idPerson);
+        }
+
+        private void OrderAccounts()
+        {
+            var accountId = 0;
+            foreach (var account in Accounts)
+            {
+                accountId++;
+                account.AccountId = accountId;
+            }
+        }
     }
 }

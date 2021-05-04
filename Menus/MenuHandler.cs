@@ -120,18 +120,35 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void AccountTransactions(int account)
         {
-
             var title = "Account Transactions " + accountControler.GetAccountName(account); 
             string[] optionList =
                {
+                "Delete Account",
                 "Account Infos"
                };
             string option = MenuDefaults.ListScreen(title, "Option", optionList, () => ManageProfile());
             switch (option)
             {
-                case "1": ShowAccount(account); break;
+                case "1": DeleteAccount(account); break;
+                case "2": ShowAccount(account); break;
                 case "*": Wellcome(); break;
                 default: ManageProfile(); break;
+            }
+        }
+
+        private void DeleteAccount(int account)
+        {
+            if (MenuDefaults.AreYouSureScreen("Delete Account", () => DeleteAccount(account)))
+            {
+                accountControler.DeleteAccount(personControler.GetId(), account);
+                if (accountControler.AccountsEmpty())
+                    Wellcome();
+                else
+                    ListAccounts();
+            }
+            else
+            {
+                AccountTransactions(account);
             }
         }
 
@@ -144,8 +161,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void DeleteUser()
         {
-            string anwser = MenuDefaults.AreYouSureScreen("Delete User", () => DeleteUser());
-            if (anwser == "Y")
+            if (MenuDefaults.AreYouSureScreen("Delete User", () => DeleteUser())) 
             {
                 personControler.DeleteUser();
                 Show();
@@ -172,8 +188,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void UpdateName(string newName)
         {
-            string anwser = MenuDefaults.AreYouSureScreen("Change Name", () => UpdateName(newName));
-            if (anwser == "Y")
+            if (MenuDefaults.AreYouSureScreen("Change Name", () => UpdateName(newName)))
             {
                 personControler.UpdateName(newName);
             }

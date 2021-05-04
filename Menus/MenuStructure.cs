@@ -6,8 +6,8 @@ namespace PersonalFinanceControlConsole.Menus
 {
     public static class MenuStructure
     {
-        static int ScreenSizeLines = 20;
-        static int ScreenSizeCols = 34;
+        readonly static int ScreenSizeLines = 20;
+        readonly static int ScreenSizeCols = 34;
         private static int CurrentLine = 0;
         
         public static void DrawScreen()
