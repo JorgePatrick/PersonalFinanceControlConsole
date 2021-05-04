@@ -9,6 +9,10 @@ namespace PersonalFinanceControlConsole.Controlers
     {
         public Account Account;
 
+        public AccountControler()
+        {
+        }
+
         public AccountControler(Account account)
         {
             Account = account;
