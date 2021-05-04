@@ -8,7 +8,8 @@ namespace PersonalFinanceControlConsole.Menus
     {
         static int ScreenSizeLines = 20;
         static int ScreenSizeCols = 34;
-        public static int CurrentLine = 0;
+        private static int CurrentLine = 0;
+        
         public static void DrawScreen()
         {
             Console.Clear();
@@ -31,6 +32,15 @@ namespace PersonalFinanceControlConsole.Menus
             Console.Write("+");
             Console.Write("\n");
         }
+
+        internal static void AddLine(int lines)
+        {
+            for (int i = 0; i < lines; i++)
+            {
+                CurrentLine++;
+            }
+        }
+
         private static void DrawMiddleLine()
         {
             Console.Write("|");

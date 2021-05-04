@@ -28,12 +28,12 @@ namespace PersonalFinanceControlConsole.Menus
 
         private int Login()
         {
-            int userId = 0;
-            while (userId == 0)
+            int idNumber = 0;
+            while (idNumber == 0)
             {
-                userId = Menus.MenuOptions.LoginScreen();
+                idNumber = Menus.MenuOptions.LoginScreen();
             }
-            return userId;
+            return idNumber;
         }
 
         private void Register()
@@ -56,7 +56,7 @@ namespace PersonalFinanceControlConsole.Menus
                 "Manage Profile",
                 "Manage Accounts"
                };
-            string option = MenuOptions.ListScreen(title, "Option", optionList, () => Wellcome());
+            string option = MenuDefaults.ListScreen(title, "Option", optionList, () => Wellcome());
             switch (option)
             {
                 case "1": ManageProfile(); break;
@@ -73,7 +73,7 @@ namespace PersonalFinanceControlConsole.Menus
                 "Change Name",
                 "Delete User"
                };
-            string option = MenuOptions.ListScreen(title, "Option", optionList, () => ManageProfile());
+            string option = MenuDefaults.ListScreen(title, "Option", optionList, () => ManageProfile());
             switch (option)
             {
                 case "1": ChangeName(); break;
@@ -96,7 +96,7 @@ namespace PersonalFinanceControlConsole.Menus
                 "Add Account",
                 "List Accounts"
                };
-            string option = MenuOptions.ListScreen(title, "Option", optionList, () => ManageAccounts());
+            string option = MenuDefaults.ListScreen(title, "Option", optionList, () => ManageAccounts());
             switch (option)
             {
                 case "1": AddAccount(); break;
@@ -110,7 +110,7 @@ namespace PersonalFinanceControlConsole.Menus
         {
             var title = "Accounts List " + personControler.GetUserName();
             string[] AccountList = accountControler.GetList();
-            string account = MenuOptions.ListScreen(title, "Option", AccountList, () => ListAccounts());
+            string account = MenuDefaults.ListScreen(title, "Option", AccountList, () => ListAccounts());
             switch (account)
             {
                 case "*": ManageAccounts(); break;
@@ -126,7 +126,7 @@ namespace PersonalFinanceControlConsole.Menus
                {
                 "Account Infos"
                };
-            string option = MenuOptions.ListScreen(title, "Option", optionList, () => ManageProfile());
+            string option = MenuDefaults.ListScreen(title, "Option", optionList, () => ManageProfile());
             switch (option)
             {
                 case "1": ShowAccount(account); break;
@@ -144,7 +144,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void DeleteUser()
         {
-            string anwser = Menus.MenuOptions.AreYouSureScreen("Delete User", () => DeleteUser());
+            string anwser = MenuDefaults.AreYouSureScreen("Delete User", () => DeleteUser());
             if (anwser == "Y")
             {
                 personControler.DeleteUser();
@@ -172,7 +172,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void UpdateName(string newName)
         {
-            string anwser = Menus.MenuOptions.AreYouSureScreen("Change Name", () => UpdateName(newName));
+            string anwser = MenuDefaults.AreYouSureScreen("Change Name", () => UpdateName(newName));
             if (anwser == "Y")
             {
                 personControler.UpdateName(newName);
@@ -197,7 +197,7 @@ namespace PersonalFinanceControlConsole.Menus
         {
             if (accountControler.VerifyExistingAccount(accountName))
             {
-                MenuOptions.Message("You already have an account " + accountName);
+                MenuDefaults.Message("You already have an account " + accountName);
                 AddAccount();
                 return;
             }

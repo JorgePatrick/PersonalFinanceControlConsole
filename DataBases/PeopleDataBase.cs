@@ -18,12 +18,11 @@ namespace PersonalFinanceControlConsole.DataBases
 
         internal Person ReadUser(int userId)
         {
-            var user = new Person(userId);
             var query =
                 from e in Collection.AsQueryable<Person>()
                 where e.UserId == userId
                 select e;
-            user = query.FirstOrDefault();
+            var user = query.FirstOrDefault();
             return user;
         }
 

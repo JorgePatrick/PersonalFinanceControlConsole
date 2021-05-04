@@ -28,24 +28,6 @@ namespace PersonalFinanceControlConsole.Menus
             return MenuStructure.ReadLine(null, ETypeRead.String);
         }
 
-        internal static string ListScreen(string title, string listType, string[] optionList, Action method)
-        {
-            int optionIndex = 0;
-
-            MenuStructure.DrawScreen();
-            MenuStructure.SetGoBackOption();
-            MenuStructure.SetTitle(title);
-            MenuStructure.WriteNewLine("Choose one " + listType + ":");
-            foreach (var optionText in optionList)
-            {
-                optionIndex++;
-                MenuStructure.WriteNewLine(optionIndex + " - " + optionText);
-            }
-            MenuStructure.CurrentLine++;
-            MenuStructure.WriteLine(listType + ": ");
-            return MenuStructure.ReadLine(method, ETypeRead.NumberList, optionIndex);
-        }
-
         internal static string ChangeName(string userName)
         {
             MenuStructure.DrawScreen();
@@ -56,31 +38,13 @@ namespace PersonalFinanceControlConsole.Menus
             return MenuStructure.ReadLine(null, ETypeRead.String);
         }
 
-        internal static string AreYouSureScreen(string message, Action method)
-        {
-            MenuStructure.DrawScreen();
-            MenuStructure.SetTitle(message);
-            MenuStructure.CurrentLine++;
-            MenuStructure.WriteLine("Are you sure? (Y/N) ");
-            return MenuStructure.ReadLine(method, ETypeRead.YesOrNo);
-        }
-
-        internal static void Message(string message)
-        {
-            MenuStructure.DrawScreen();
-            MenuStructure.SetTitle("Message");
-            MenuStructure.CurrentLine++;
-            MenuStructure.WriteNewLine(message);
-            MenuStructure.ReadKey();
-        }
-
         internal static string AddAccountScreen()
         {
             MenuStructure.DrawScreen();
             MenuStructure.SetGoBackOption();
             MenuStructure.SetTitle("Add Account");
             MenuStructure.WriteNewLine("Fill the info above");
-            MenuStructure.CurrentLine++;
+            MenuStructure.AddLine(1);
             MenuStructure.WriteLine("Account Name: ");
             return MenuStructure.ReadLine(null, ETypeRead.String);
         }
