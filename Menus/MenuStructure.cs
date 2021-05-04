@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PersonalFinanceControlConsole.Menus
 {
-    public static class MenuDefault
+    public static class MenuStructure
     {
         static int ScreenSizeLines = 20;
         static int ScreenSizeCols = 34;
@@ -117,6 +117,12 @@ namespace PersonalFinanceControlConsole.Menus
                 method();
             }
             return text;
+        }
+
+        internal static void ReadKey()
+        {
+            WriteLine("");
+            Console.ReadKey();
         }
 
         private static string CheckInvalidNumberList(string text, int maxValue)

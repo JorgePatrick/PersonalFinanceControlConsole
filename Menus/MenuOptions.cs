@@ -9,10 +9,10 @@ namespace PersonalFinanceControlConsole.Menus
     {
         public static int LoginScreen()
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Login");
-            MenuDefault.WriteLine("Type your Id: ");
-            string userIdStr = MenuDefault.ReadLine(null, ETypeRead.Int);
+            MenuStructure.DrawScreen();
+            MenuStructure.SetTitle("Login");
+            MenuStructure.WriteLine("Type your Id: ");
+            string userIdStr = MenuStructure.ReadLine(null, ETypeRead.Int);
             if (userIdStr == "invalid")
             {
                 return 0;
@@ -21,78 +21,79 @@ namespace PersonalFinanceControlConsole.Menus
         }
         public static string RegisterScreen(int userId)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Register");
-            MenuDefault.WriteLine("Id: " + userId);
-            MenuDefault.WriteLine("Enter your name: ");
-            return MenuDefault.ReadLine(null, ETypeRead.String);
+            MenuStructure.DrawScreen();
+            MenuStructure.SetTitle("Register");
+            MenuStructure.WriteLine("Id: " + userId);
+            MenuStructure.WriteLine("Enter your name: ");
+            return MenuStructure.ReadLine(null, ETypeRead.String);
         }
 
         internal static string ListScreen(string title, string listType, string[] optionList, Action method)
         {
             int optionIndex = 0;
 
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle(title);
-            MenuDefault.WriteNewLine("Choose one " + listType + ":");
+            MenuStructure.DrawScreen();
+            MenuStructure.SetGoBackOption();
+            MenuStructure.SetTitle(title);
+            MenuStructure.WriteNewLine("Choose one " + listType + ":");
             foreach (var optionText in optionList)
             {
                 optionIndex++;
-                MenuDefault.WriteNewLine(optionIndex + " - " + optionText);
+                MenuStructure.WriteNewLine(optionIndex + " - " + optionText);
             }
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine(listType + ": ");
-            return MenuDefault.ReadLine(method, ETypeRead.NumberList, optionIndex);
+            MenuStructure.CurrentLine++;
+            MenuStructure.WriteLine(listType + ": ");
+            return MenuStructure.ReadLine(method, ETypeRead.NumberList, optionIndex);
         }
 
         internal static string ChangeName(string userName)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Change Name");
-            MenuDefault.WriteLine("Name: " + userName);
-            MenuDefault.WriteLine("Enter new name: ");
-            return MenuDefault.ReadLine(null, ETypeRead.String);
+            MenuStructure.DrawScreen();
+            MenuStructure.SetGoBackOption();
+            MenuStructure.SetTitle("Change Name");
+            MenuStructure.WriteLine("Name: " + userName);
+            MenuStructure.WriteLine("Enter new name: ");
+            return MenuStructure.ReadLine(null, ETypeRead.String);
         }
 
         internal static string AreYouSureScreen(string message, Action method)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle(message);
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Are you sure? (Y/N) ");
-            return MenuDefault.ReadLine(method, ETypeRead.YesOrNo);
+            MenuStructure.DrawScreen();
+            MenuStructure.SetTitle(message);
+            MenuStructure.CurrentLine++;
+            MenuStructure.WriteLine("Are you sure? (Y/N) ");
+            return MenuStructure.ReadLine(method, ETypeRead.YesOrNo);
         }
 
         internal static void Message(string message)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Message");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteNewLine(message);
-            MenuDefault.ReadKey();
+            MenuStructure.DrawScreen();
+            MenuStructure.SetTitle("Message");
+            MenuStructure.CurrentLine++;
+            MenuStructure.WriteNewLine(message);
+            MenuStructure.ReadKey();
         }
 
-        internal static void AddAccountScreen()
+        internal static string AddAccountScreen()
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetGoBackOption();
-            MenuDefault.SetTitle("Add Account");
-            MenuDefault.WriteNewLine("Fill the info above");
-            MenuDefault.CurrentLine++;
-            MenuDefault.WriteLine("Account Name: ");
+            MenuStructure.DrawScreen();
+            MenuStructure.SetGoBackOption();
+            MenuStructure.SetTitle("Add Account");
+            MenuStructure.WriteNewLine("Fill the info above");
+            MenuStructure.CurrentLine++;
+            MenuStructure.WriteLine("Account Name: ");
+            return MenuStructure.ReadLine(null, ETypeRead.String);
         }
 
         internal static void ShowAccount(string[,] accounInfo)
         {
-            MenuDefault.DrawScreen();
-            MenuDefault.SetTitle("Account Infos");
+            MenuStructure.DrawScreen();
+            MenuStructure.SetTitle("Account Infos");
             for (int i = 0; i < accounInfo.GetLength(0); i++)
             {
-                MenuDefault.WriteNewLine(accounInfo[i, 0] + ": " + accounInfo[i, 1]);
+                MenuStructure.WriteNewLine(accounInfo[i, 0] + ": " + accounInfo[i, 1]);
             }
-            MenuDefault.ReadKey();
+            MenuStructure.ReadKey();
         }
     }
 }

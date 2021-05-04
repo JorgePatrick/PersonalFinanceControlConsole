@@ -182,8 +182,11 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void AddAccount()
         {
-            MenuOptions.AddAccountScreen();
-            string accountName = MenuDefault.ReadLine(() => AddAccount(), ETypeRead.String);
+            string accountName = "invalid";
+            while (accountName == "invalid")
+            {
+                accountName = Menus.MenuOptions.AddAccountScreen();
+            }
             switch (accountName)
             {
                 case "*": ManageAccounts(); break;
