@@ -10,17 +10,17 @@ namespace PersonalFinanceControlConsole.Controlers
     internal class PersonControler
     {
         public PeopleDataBase PersonDataBase = new PeopleDataBase();
-        public Person user;
+        public Person User;
 
         internal bool UserNotExists(int userId)
         {
-            user = PersonDataBase.ReadUser(userId);
+            User = PersonDataBase.ReadUser(userId);
             return NotExists();
         }
 
         private bool NotExists()
         {
-            if (user == null)
+            if (User == null)
             {
                 return true;
             }
@@ -29,34 +29,34 @@ namespace PersonalFinanceControlConsole.Controlers
 
         internal string GetUserName()
         {
-            return user.Name;
+            return User.Name;
         }
 
         internal void InsertUser(int userId, string userName)
         {
-            user = new Person(userId, userName);
-            PersonDataBase.InsertUser(user);
+            User = new Person(userId, userName);
+            PersonDataBase.InsertUser(User);
         }
 
         internal void DeleteUser()
         {
-            PersonDataBase.DeleteUser(user);
+            PersonDataBase.DeleteUser(User);
         }
 
         internal List<Account> GetAccounts()
         {
-            return user.Accounts;
+            return User.Accounts;
         }
 
         internal BsonObjectId GetId()
         {
-            return user.Id;
+            return User.Id;
         }
 
         internal void UpdateName(string newName)
         {
-            user.Name = newName;
-            PersonDataBase.UpdateName(user);
+            User.Name = newName;
+            PersonDataBase.UpdateName(User);
         }
     }
 }

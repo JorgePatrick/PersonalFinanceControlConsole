@@ -11,7 +11,8 @@ namespace PersonalFinanceControlConsole.Menus
     class MenuHandler
     {
         public PersonControler personControler = new PersonControler();
-        public AccountControler accountControler = new AccountControler();
+        public AccountListControler accountListControler = new AccountListControler();
+        public AccountControler accountControler;
         int userId;
 
         public void Show()
@@ -48,7 +49,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void Wellcome()
         {
-            accountControler.SetAccounts(personControler.GetAccounts());
+            accountListControler.SetAccounts(personControler.GetAccounts());
 
             var title = "Wellcome " + personControler.GetUserName();
             string[] optionList =
@@ -65,6 +66,7 @@ namespace PersonalFinanceControlConsole.Menus
                 default: Wellcome(); break;
             }
         }
+
         private void ManageProfile()
         {
             var title = "Manage Profile " + personControler.GetUserName();
@@ -83,9 +85,36 @@ namespace PersonalFinanceControlConsole.Menus
             }
         }
 
+        private void ChangeName()
+        {
+            string newName = "invalid";
+            while (newName == "invalid")
+            {
+                newName = Menus.MenuOptions.ChangeName(personControler.GetUserName());
+            }
+            switch (newName)
+            {
+                case "*": ManageProfile(); break;
+                default: UpdateName(newName); break;
+            }
+        }
+
+        private void DeleteUser()
+        {
+            if (MenuDefaults.AreYouSureScreen("Delete User", () => DeleteUser()))
+            {
+                personControler.DeleteUser();
+                Show();
+            }
+            else
+            {
+                ManageProfile();
+            }
+        }
+
         private void ManageAccounts()
         {
-            if (accountControler.AccountsEmpty())
+            if (accountListControler.AccountsEmpty())
             {
                 AddAccount();
             }
@@ -109,7 +138,7 @@ namespace PersonalFinanceControlConsole.Menus
         private void ListAccounts()
         {
             var title = "Accounts List " + personControler.GetUserName();
-            string[] AccountList = accountControler.GetList();
+            string[] AccountList = accountListControler.GetList();
             string account = MenuDefaults.ListScreen(title, "Option", AccountList, () => ListAccounts());
             switch (account)
             {
@@ -120,7 +149,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void AccountTransactions(int account)
         {
-            var title = "Account Transactions " + accountControler.GetAccountName(account); 
+            var title = "Account Transactions " + accountControler.GetAccountName(); 
             string[] optionList =
                {
                 "Delete Account",
@@ -140,8 +169,8 @@ namespace PersonalFinanceControlConsole.Menus
         {
             if (MenuDefaults.AreYouSureScreen("Delete Account", () => DeleteAccount(account)))
             {
-                accountControler.DeleteAccount(personControler.GetId(), account);
-                if (accountControler.AccountsEmpty())
+                accountListControler.DeleteAccount(personControler.GetId(), account);
+                if (accountListControler.AccountsEmpty())
                     Wellcome();
                 else
                     ListAccounts();
@@ -154,36 +183,9 @@ namespace PersonalFinanceControlConsole.Menus
 
         private void ShowAccount(int account)
         {
-            string[,] accounInfo = accountControler.GetAccountInfo(account);
+            string[,] accounInfo = accountControler.GetAccountInfo();
             MenuOptions.ShowAccount(accounInfo);
             AccountTransactions(account);
-        }
-
-        private void DeleteUser()
-        {
-            if (MenuDefaults.AreYouSureScreen("Delete User", () => DeleteUser())) 
-            {
-                personControler.DeleteUser();
-                Show();
-            }
-            else
-            {
-                ManageProfile();
-            }
-        }
-
-        private void ChangeName()
-        {
-            string newName = "invalid";
-            while (newName == "invalid")
-            {
-                newName = Menus.MenuOptions.ChangeName(personControler.GetUserName());
-            }
-            switch (newName)
-            {
-                case "*": ManageProfile(); break;
-                default: UpdateName(newName); break;
-            }
         }
 
         private void UpdateName(string newName)
@@ -210,13 +212,13 @@ namespace PersonalFinanceControlConsole.Menus
         }
         private void InsertAccount(string accountName)
         {
-            if (accountControler.VerifyExistingAccount(accountName))
+            if (accountListControler.VerifyExistingAccount(accountName))
             {
                 MenuDefaults.Message("You already have an account " + accountName);
                 AddAccount();
                 return;
             }
-            accountControler.InsertAccount(personControler.GetId(), accountName);
+            accountListControler.InsertAccount(personControler.GetId(), accountName);
             ManageAccounts();
         }
     }
