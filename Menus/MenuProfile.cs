@@ -27,7 +27,7 @@ namespace PersonalFinanceControlConsole.Menus
             {
                 case "1": ChangeName(); break;
                 case "2": DeleteUser(); break;
-                case "*": break;
+                case MenuStructure.Back: break;
                 default: ManageProfile(); break;
             }
         }
@@ -40,7 +40,7 @@ namespace PersonalFinanceControlConsole.Menus
             }
             switch (newName)
             {
-                case "*": ManageProfile(); break;
+                case MenuStructure.Back: ManageProfile(); break;
                 default: UpdateName(newName); break;
             }
         }

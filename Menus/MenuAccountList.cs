@@ -1,4 +1,5 @@
 ﻿using PersonalFinanceControlConsole.Controlers;
+using PersonalFinanceControlConsole.Menus.Structs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,10 +35,32 @@ namespace PersonalFinanceControlConsole.Menus
             {
                 case "1": AddAccount(); break;
                 case "2": ListAccounts(); break;
-                case "*": break;
+                case MenuStructure.Back: break;
                 default: ManageAccounts(); break;
             }
         }
+        
+        private void AddAccount()
+        {
+            var sAccount = Menus.MenuOptions.AddAccountScreen();
+            if (sAccount.OptionBack)
+                ManageAccounts();
+            else
+                InsertAccount(sAccount);
+        }
+
+        private void InsertAccount(SAccount sAccount)
+        {
+            if (accountListControler.VerifyExistingAccount(sAccount.Name))
+            {
+                MenuDefaults.Message("You already have an account " + sAccount.Name);
+                AddAccount();
+                return;
+            }
+            accountListControler.InsertAccount(personControler.GetId(), sAccount);
+            ManageAccounts();
+        }
+
         private void ListAccounts()
         {
             if (accountListControler.AccountsEmpty())
@@ -48,7 +71,7 @@ namespace PersonalFinanceControlConsole.Menus
             string account = MenuDefaults.ListScreen(title, "Option", AccountList, () => ListAccounts());
             switch (account)
             {
-                case "*": ManageAccounts(); break;
+                case MenuStructure.Back: ManageAccounts(); break;
                 default: ManageSingleAccount(account); break;
             }
         }
@@ -59,32 +82,6 @@ namespace PersonalFinanceControlConsole.Menus
             var menuAccount = new MenuAccount(personControler, accountListControler, accountId);
             menuAccount.AccountTransactions();
             ListAccounts();
-        }
-
-        private void AddAccount()
-        {
-            string accountName = "invalid";
-            while (accountName == "invalid")
-            {
-                accountName = Menus.MenuOptions.AddAccountScreen();
-            }
-            switch (accountName)
-            {
-                case "*": ManageAccounts(); break;
-                default: InsertAccount(accountName); break;
-            }
-        }
-
-        private void InsertAccount(string accountName)
-        {
-            if (accountListControler.VerifyExistingAccount(accountName))
-            {
-                MenuDefaults.Message("You already have an account " + accountName);
-                AddAccount();
-                return;
-            }
-            accountListControler.InsertAccount(personControler.GetId(), accountName);
-            ManageAccounts();
         }
 
     }

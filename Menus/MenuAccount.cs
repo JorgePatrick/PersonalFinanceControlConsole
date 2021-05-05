@@ -33,7 +33,7 @@ namespace PersonalFinanceControlConsole.Menus
             {
                 case "1": DeleteAccount(); break;
                 case "2": ShowAccount(); break;
-                case "*": break;
+                case MenuStructure.Back: break;
                 default: AccountTransactions(); break;
             }
         }

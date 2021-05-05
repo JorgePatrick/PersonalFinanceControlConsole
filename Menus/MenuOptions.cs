@@ -1,4 +1,5 @@
 ﻿using PersonalFinanceControlConsole.Menus.Enums;
+using PersonalFinanceControlConsole.Menus.Structs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,15 +39,20 @@ namespace PersonalFinanceControlConsole.Menus
             return MenuStructure.ReadLine(null, ETypeRead.String);
         }
 
-        internal static string AddAccountScreen()
+        internal static SAccount AddAccountScreen()
         {
+            SAccount sAccount = new SAccount();
             MenuStructure.DrawScreen();
             MenuStructure.SetGoBackOption();
             MenuStructure.SetTitle("Add Account");
             MenuStructure.WriteNewLine("Fill the info above");
             MenuStructure.AddLine(1);
-            MenuStructure.WriteLine("Account Name: ");
-            return MenuStructure.ReadLine(null, ETypeRead.String);
+            string input = MenuStructure.ReadMany("Account Name: ", ETypeRead.String);
+            if (input == MenuStructure.Back)
+                sAccount.OptionBack = true;
+            else
+                sAccount.Name = input;
+            return sAccount;
         }
 
         internal static void ShowAccount(string[,] accounInfo)

@@ -58,7 +58,7 @@ namespace PersonalFinanceControlConsole.Menus
             {
                 case "1": ManageProfile(); break;
                 case "2": ManageAccounts(); break;
-                case "*": Show(); break;
+                case MenuStructure.Back: Show(); break;
                 default: Wellcome(); break;
             }
         }

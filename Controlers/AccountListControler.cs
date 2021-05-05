@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using PersonalFinanceControlConsole.DataBases;
 using PersonalFinanceControlConsole.Entities;
+using PersonalFinanceControlConsole.Menus.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace PersonalFinanceControlConsole.Controlers
             return Accounts.Any(x => x.AccountName == accountName);
         }
 
-        internal void InsertAccount(BsonObjectId idPerson, string accountName)
+        internal void InsertAccount(BsonObjectId idPerson, SAccount sAccount)
         {
             int idAccount = 0;
             if (!AccountsEmpty())
@@ -31,7 +32,7 @@ namespace PersonalFinanceControlConsole.Controlers
                 idAccount = Accounts.Max(t => t.AccountId);
             }
             idAccount++;
-            Accounts.Add(new Account(idAccount, accountName));
+            Accounts.Add(new Account(idAccount, sAccount.Name));
             AccountDataBase.UpdateAccounts(Accounts, idPerson);
         }
 

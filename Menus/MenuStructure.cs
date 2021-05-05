@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PersonalFinanceControlConsole.Menus.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,10 +7,12 @@ namespace PersonalFinanceControlConsole.Menus
 {
     public static class MenuStructure
     {
-        readonly static int ScreenSizeLines = 20;
-        readonly static int ScreenSizeCols = 34;
+        public const int ScreenSizeLines = 20;
+        public const int ScreenSizeCols = 34;
+        public const string Exit = "0";
+        public const string Back = "*";
         private static int CurrentLine = 0;
-        
+
         public static void DrawScreen()
         {
             Console.Clear();
@@ -65,8 +68,9 @@ namespace PersonalFinanceControlConsole.Menus
         private static void Footnote()
         {
             Console.SetCursorPosition(3, ScreenSizeLines);
-            Console.WriteLine("Type 0 to Exit");
+            Console.WriteLine("Type " + Exit + " to Exit");
         }
+
         public static void SetTitle(string title)
         {
             Console.SetCursorPosition(3, 4);
@@ -82,7 +86,7 @@ namespace PersonalFinanceControlConsole.Menus
         internal static void SetGoBackOption()
         {
             Console.SetCursorPosition(18, ScreenSizeLines);
-            Console.Write("/ * to Back");
+            Console.Write("/ " + Back + " to Back");
         }
         internal static void WriteNewLine(string text)
         {
@@ -98,7 +102,15 @@ namespace PersonalFinanceControlConsole.Menus
             Console.Write(text);
         }
 
-        internal static string ReadLine(Action method, Enums.ETypeRead typeRead, int optionMaxValue = 0)
+        private static void WriteSameLine(string text)
+        {
+            Console.SetCursorPosition(0, CurrentLine);
+            DrawMiddleLine();
+            Console.SetCursorPosition(3, CurrentLine);
+            Console.Write(text);
+        }
+
+        internal static string ReadLine(Action method, ETypeRead typeRead, int optionMaxValue = 0)
         {
             var text = Console.ReadLine();
             CheckExit(text);
@@ -108,15 +120,15 @@ namespace PersonalFinanceControlConsole.Menus
             }
             switch (typeRead)
             {
-                case Enums.ETypeRead.String:
+                case ETypeRead.String:
                     break;
-                case Enums.ETypeRead.Int:
+                case ETypeRead.Int:
                     text = CheckInvalidNumber(text);
                     break;
-                case Enums.ETypeRead.YesOrNo:
+                case ETypeRead.YesOrNo:
                     text = CheckInvalidYesOrNo(text);
                     break;
-                case Enums.ETypeRead.NumberList:
+                case ETypeRead.NumberList:
                     text = CheckInvalidNumberList(text, optionMaxValue);
                     break;
                 default:
@@ -129,6 +141,18 @@ namespace PersonalFinanceControlConsole.Menus
             return text;
         }
 
+        internal static string ReadMany(string text, ETypeRead typeRead)
+        {
+            string input;
+            AddLine(1);
+            do
+            {
+                WriteSameLine(text);
+                input = MenuStructure.ReadLine(null, typeRead);
+            } while (input == "invalid");
+            return input;
+        }
+
         internal static void ReadKey()
         {
             WriteLine("");
@@ -137,7 +161,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         private static string CheckInvalidNumberList(string text, int maxValue)
         {
-            if (text == "*")
+            if (text == Back)
                 return text;
 
             text = CheckInvalidNumber(text);
@@ -172,7 +196,7 @@ namespace PersonalFinanceControlConsole.Menus
 
         internal static void CheckExit(string option)
         {
-            if (option == "0")
+            if (option == Exit)
             {
                 Console.Clear();
                 System.Environment.Exit(0);
